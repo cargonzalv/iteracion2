@@ -16,7 +16,7 @@ import org.codehaus.jackson.annotate.*;
  * Clase que representa un Video
  * @author Juan
  */
-public class Video {
+public class Vuelo {
 
 	//// Atributos
 
@@ -45,7 +45,7 @@ public class Video {
 	 * @param name - Nombre del video. name != null
 	 * @param duration - Duración en minutos del video.
 	 */
-	public Video(@JsonProperty(value="id")int id, @JsonProperty(value="name")String name,@JsonProperty(value="duration") int duration) {
+	public Vuelo(@JsonProperty(value="id")int id, @JsonProperty(value="name")String name,@JsonProperty(value="duration") int duration) {
 		super();
 		this.id = id;
 		this.name = name;

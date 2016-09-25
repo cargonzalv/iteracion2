@@ -25,16 +25,16 @@ import javax.ws.rs.core.Response;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import tm.VideoAndesMaster;
-import vos.Video;
-import vos.ListaVideos;
+import tm.VuelosAndesMaster;
+import vos.Vuelo;
+import vos.ListaVuelos;
 
 /**
  * Clase que expone servicios REST con ruta base: http://"ip o nombre de host":8080/VideoAndes/rest/videos/...
  * @author Juan
  */
-@Path("videos")
-public class VideoAndesVideosServices {
+@Path("")
+public class VuelosAndesVuelosServices {
 
 	// Servicios REST tipo GET:
 
@@ -66,16 +66,17 @@ public class VideoAndesVideosServices {
      * el error que se produjo
 	 */
 	@GET
+	@Path("vuelos")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getVideos() {
-		VideoAndesMaster tm = new VideoAndesMaster(getPath());
-		ListaVideos videos;
+	public Response getVuelos() {
+		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
+		ListaVuelos vuelos;
 		try {
-			videos = tm.darVideos();
+			vuelos = tm.darVuelos();
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
-		return Response.status(200).entity(videos).build();
+		return Response.status(200).entity(vuelos).build();
 	}
 
 
@@ -87,40 +88,22 @@ public class VideoAndesVideosServices {
      * el error que se produjo
      */
 	@GET
-	@Path("/name/{name}")
+	@Path("vuelos/name/{name}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getVideoName(@javax.ws.rs.PathParam("name") String name) {
-		VideoAndesMaster tm = new VideoAndesMaster(getPath());
-		ListaVideos videos;
+	public Response getVuelosPorAerolinea(@javax.ws.rs.PathParam("name") String name) {
+		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
+		ListaVuelos vuelos;
 		try {
 			if (name == null || name.length() == 0)
 				throw new Exception("Nombre del video no valido");
-			videos = tm.buscarVideosPorName(name);
+			vuelos = tm.buscarVuelosPorAerolinea(name);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
-		return Response.status(200).entity(videos).build();
+		return Response.status(200).entity(vuelos).build();
 	}
 	
-    /**
-     * Método que expone servicio REST usando GET que busca el video mas alquilado
-     * <b>URL: </b> http://"ip o nombre de host":8080/VideoAndes/rest/videos/MayorAlquilado
-     * @return Json con el/los videos encontrados con el nombre que entra como parámetro o json con 
-     * el error que se produjo
-     */
-	@GET
-	@Path("/MayorAlquilado")
-	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getVideoMayorAlquilado() {
-		VideoAndesMaster tm = new VideoAndesMaster(getPath());
-		ListaVideos videos;
-		try {
-			videos = tm.videosMasAlquilados();
-		} catch (Exception e) {
-			return Response.status(500).entity(doErrorMessage(e)).build();
-		}
-		return Response.status(200).entity(videos).build();
-	}
+  
 
 
     /**
@@ -130,38 +113,20 @@ public class VideoAndesVideosServices {
      * @return Json con el video que agrego o Json con el error que se produjo
      */
 	@PUT
-	@Path("/video")
+	@Path("vuelos")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addVideo(Video video) {
-		VideoAndesMaster tm = new VideoAndesMaster(getPath());
+	public Response addVuelo(Vuelo vuelo) {
+		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
 		try {
-			tm.addVideo(video);
+			tm.addVuelo(vuelo);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
-		return Response.status(200).entity(video).build();
+		return Response.status(200).entity(vuelo).build();
 	}
 	
-    /**
-     * Método que expone servicio REST usando PUT que agrega los videos que recibe en Json
-     * <b>URL: </b> http://"ip o nombre de host":8080/VideoAndes/rest/videos/videos
-     * @param videos - videos a agregar. 
-     * @return Json con el video que agrego o Json con el error que se produjo
-     */
-	@PUT
-	@Path("/videos")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response addVideo(ListaVideos videos) {
-		VideoAndesMaster tm = new VideoAndesMaster(getPath());
-		try {
-			tm.addVideos(videos);
-		} catch (Exception e) {
-			return Response.status(500).entity(doErrorMessage(e)).build();
-		}
-		return Response.status(200).entity(videos).build();
-	}
+    
 	
     /**
      * Método que expone servicio REST usando POST que actualiza el video que recibe en Json
@@ -170,13 +135,13 @@ public class VideoAndesVideosServices {
      * @return Json con el video que actualizo o Json con el error que se produjo
      */
 	@POST
-	@Path("/video")
+	@Path("vuelos/vuelo")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateVideo(Video video) {
-		VideoAndesMaster tm = new VideoAndesMaster(getPath());
+	public Response updateVideo(Vuelo video) {
+		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
 		try {
-			tm.updateVideo(video);
+			tm.updateVuelo(video);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
@@ -190,17 +155,17 @@ public class VideoAndesVideosServices {
      * @return Json con el video que elimino o Json con el error que se produjo
      */
 	@DELETE
-	@Path("/video")
+	@Path("vuelos/video")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteVideo(Video video) {
-		VideoAndesMaster tm = new VideoAndesMaster(getPath());
+	public Response deleteVideo(Vuelo vuelo) {
+		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
 		try {
-			tm.deleteVideo(video);
+			tm.deleteVuelo(vuelo);
 		} catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
-		return Response.status(200).entity(video).build();
+		return Response.status(200).entity(vuelo).build();
 	}
 
 

@@ -18,15 +18,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import dao.DAOTablaVideos;
-import vos.Video;
-import vos.ListaVideos;
+import dao.DAOTablaVuelos;
+import vos.Vuelo;
+import vos.ListaVuelos;
 
 /**
  * Fachada en patron singleton de la aplicación
  * @author Juan
  */
-public class VideoAndesMaster {
+public class VuelosAndesMaster {
 
 
 	/**
@@ -72,7 +72,7 @@ public class VideoAndesMaster {
 	 * inicializa los atributos que se usan par la conexión a la base de datos.
 	 * @param contextPathP - path absoluto en el servidor del contexto del deploy actual
 	 */
-	public VideoAndesMaster(String contextPathP) {
+	public VuelosAndesMaster(String contextPathP) {
 		connectionDataPath = contextPathP + CONNECTION_DATA_FILE_NAME_REMOTE;
 		initConnectionData();
 	}
@@ -118,15 +118,15 @@ public class VideoAndesMaster {
 	 * @return ListaVideos - objeto que modela  un arreglo de videos. este arreglo contiene el resultado de la búsqueda
 	 * @throws Exception -  cualquier error que se genere durante la transacción
 	 */
-	public ListaVideos darVideos() throws Exception {
-		ArrayList<Video> videos;
-		DAOTablaVideos daoVideos = new DAOTablaVideos();
+	public ListaVuelos darVuelos() throws Exception {
+		ArrayList<Vuelo> vuelos;
+		DAOTablaVuelos daoVuelos = new DAOTablaVuelos();
 		try 
 		{
 			//////Transacción
 			this.conn = darConexion();
-			daoVideos.setConn(conn);
-			videos = daoVideos.darVideos();
+			daoVuelos.setConn(conn);
+			vuelos = daoVuelos.darVuelos();
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -138,7 +138,7 @@ public class VideoAndesMaster {
 			throw e;
 		} finally {
 			try {
-				daoVideos.cerrarRecursos();
+				daoVuelos.cerrarVuelos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -147,7 +147,7 @@ public class VideoAndesMaster {
 				throw exception;
 			}
 		}
-		return new ListaVideos(videos);
+		return new ListaVuelos(vuelos);
 	}
 
 	/**
@@ -156,15 +156,15 @@ public class VideoAndesMaster {
 	 * @return ListaVideos - objeto que modela  un arreglo de videos. este arreglo contiene el resultado de la búsqueda
 	 * @throws Exception -  cualquier error que se genere durante la transacción
 	 */
-	public ListaVideos buscarVideosPorName(String name) throws Exception {
-		ArrayList<Video> videos;
-		DAOTablaVideos daoVideos = new DAOTablaVideos();
+	public ListaVuelos buscarVuelosPorAerolinea(String name) throws Exception {
+		ArrayList<Vuelo> vuelos;
+		DAOTablaVuelos daoVuelos = new DAOTablaVuelos();
 		try 
 		{
 			//////Transacción
 			this.conn = darConexion();
-			daoVideos.setConn(conn);
-			videos = daoVideos.buscarVideosPorName(name);
+			daoVuelos.setConn(conn);
+			vuelos = daoVuelos.buscarVuelosPorAerolinea(name);
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -176,7 +176,7 @@ public class VideoAndesMaster {
 			throw e;
 		} finally {
 			try {
-				daoVideos.cerrarRecursos();
+				daoVuelos.cerrarVuelos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -185,7 +185,7 @@ public class VideoAndesMaster {
 				throw exception;
 			}
 		}
-		return new ListaVideos(videos);
+		return new ListaVuelos(vuelos);
 	}
 	
 	/**
@@ -194,14 +194,14 @@ public class VideoAndesMaster {
 	 * @param video - el video a agregar. video != null
 	 * @throws Exception - cualquier error que se genera agregando el video
 	 */
-	public void addVideo(Video video) throws Exception {
-		DAOTablaVideos daoVideos = new DAOTablaVideos();
+	public void addVuelo(Vuelo vuelo) throws Exception {
+		DAOTablaVuelos daoVuelos = new DAOTablaVuelos();
 		try 
 		{
 			//////Transacción
 			this.conn = darConexion();
-			daoVideos.setConn(conn);
-			daoVideos.addVideo(video);
+			daoVuelos.setConn(conn);
+			daoVuelos.addVuelo(vuelo);
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -214,7 +214,7 @@ public class VideoAndesMaster {
 			throw e;
 		} finally {
 			try {
-				daoVideos.cerrarRecursos();
+				daoVuelos.cerrarVuelos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -231,16 +231,16 @@ public class VideoAndesMaster {
 	 * @param videos - objeto que modela una lista de videos y se estos se pretenden agregar. videos != null
 	 * @throws Exception - cualquier error que se genera agregando los videos
 	 */
-	public void addVideos(ListaVideos videos) throws Exception {
-		DAOTablaVideos daoVideos = new DAOTablaVideos();
+	public void addVuelos(ListaVuelos vuelos) throws Exception {
+		DAOTablaVuelos daoVuelos = new DAOTablaVuelos();
 		try 
 		{
 			//////Transacción - ACID Example
 			this.conn = darConexion();
 			conn.setAutoCommit(false);
-			daoVideos.setConn(conn);
-			for(Video video : videos.getVideos())
-				daoVideos.addVideo(video);
+			daoVuelos.setConn(conn);
+			for(Vuelo vuelo : vuelos.getVideos())
+				daoVuelos.addVuelo(vuelo);
 			conn.commit();
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -254,7 +254,7 @@ public class VideoAndesMaster {
 			throw e;
 		} finally {
 			try {
-				daoVideos.cerrarRecursos();
+				daoVuelos.cerrarVuelos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -271,14 +271,14 @@ public class VideoAndesMaster {
 	 * @param video - Video a actualizar. video != null
 	 * @throws Exception - cualquier error que se genera actualizando los videos
 	 */
-	public void updateVideo(Video video) throws Exception {
-		DAOTablaVideos daoVideos = new DAOTablaVideos();
+	public void updateVuelo(Vuelo video) throws Exception {
+		DAOTablaVuelos daoVuelos = new DAOTablaVuelos();
 		try 
 		{
 			//////Transacción
 			this.conn = darConexion();
-			daoVideos.setConn(conn);
-			daoVideos.updateVideo(video);
+			daoVuelos.setConn(conn);
+			daoVuelos.updateVuelo(video);
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -290,7 +290,7 @@ public class VideoAndesMaster {
 			throw e;
 		} finally {
 			try {
-				daoVideos.cerrarRecursos();
+				daoVuelos.cerrarVuelos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -307,14 +307,14 @@ public class VideoAndesMaster {
 	 * @param video - Video a eliminar. video != null
 	 * @throws Exception - cualquier error que se genera actualizando los videos
 	 */
-	public void deleteVideo(Video video) throws Exception {
-		DAOTablaVideos daoVideos = new DAOTablaVideos();
+	public void deleteVuelo(Vuelo vuelo) throws Exception {
+		DAOTablaVuelos daoVuelos = new DAOTablaVuelos();
 		try 
 		{
 			//////Transacción
 			this.conn = darConexion();
-			daoVideos.setConn(conn);
-			daoVideos.deleteVideo(video);
+			daoVuelos.setConn(conn);
+			daoVuelos.deleteVuelo(vuelo);
 
 		} catch (SQLException e) {
 			System.err.println("SQLException:" + e.getMessage());
@@ -326,7 +326,7 @@ public class VideoAndesMaster {
 			throw e;
 		} finally {
 			try {
-				daoVideos.cerrarRecursos();
+				daoVuelos.cerrarVuelos();
 				if(this.conn!=null)
 					this.conn.close();
 			} catch (SQLException exception) {
@@ -337,41 +337,6 @@ public class VideoAndesMaster {
 		}
 	}
 
-	/**
-	 * Método que modela la transacción que retorna el/los videos mas alquilados
-	 * @return ListaVideos - objeto que modela  un arreglo de videos. este arreglo contiene el resultado de la búsqueda
-	 * @throws Exception -  cualquier error que se genere durante la transacción
-	 */
-	public ListaVideos videosMasAlquilados() throws Exception {
-		ArrayList<Video> videos;
-		DAOTablaVideos daoVideos = new DAOTablaVideos();
-		try 
-		{
-			//////Transacción
-			this.conn = darConexion();
-			daoVideos.setConn(conn);
-			videos = daoVideos.darVideoMasAlquilado();
-
-		} catch (SQLException e) {
-			System.err.println("SQLException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} catch (Exception e) {
-			System.err.println("GeneralException:" + e.getMessage());
-			e.printStackTrace();
-			throw e;
-		} finally {
-			try {
-				daoVideos.cerrarRecursos();
-				if(this.conn!=null)
-					this.conn.close();
-			} catch (SQLException exception) {
-				System.err.println("SQLException closing resources:" + exception.getMessage());
-				exception.printStackTrace();
-				throw exception;
-			}
-		}
-		return new ListaVideos(videos);
-	}
+	
 	
 }
