@@ -1,107 +1,94 @@
-/**-------------------------------------------------------------------
- * $Id$
- * Universidad de los Andes (Bogotá - Colombia)
- * Departamento de Ingeniería de Sistemas y Computación
- *
- * Materia: Sistemas Transaccionales
- * Ejercicio: VideoAndes
- * Autor: Juan Felipe García - jf.garcia268@uniandes.edu.co
- * -------------------------------------------------------------------
- */
+
 package vos;
 
 import org.codehaus.jackson.annotate.*;
 
 /**
- * Clase que representa un Video
- * @author Juan
+ * Clase que representa un Vuelo
  */
 public class Vuelo {
 
-	//// Atributos
-
-	/**
-	 * Id del video
-	 */
+	
 	@JsonProperty(value="id")
 	private int id;
 
-	/**
-	 * Nombre del video
-	 */
-	@JsonProperty(value="name")
-	private String name;
+	
+	@JsonProperty(value="Tipo")
+	private String tipo;
 
-	/**
-	 * Duración en minutos del video
-	 */
-	@JsonProperty(value="duration")
-	private int duration;
+	
+	@JsonProperty(value="AeropuertoLL")
+	private String AeropuertoLL;
+	
+	@JsonProperty(value="AeropuertoSA")
+	private String AeropuertoSA;
+	
+	@JsonProperty(value="Distancia")
+	private int distancia;
+	
+	@JsonProperty(value="Duracion")
+	private int duracion;
 
-	/**
-	 * Método constructor de la clase video
-	 * <b>post: </b> Crea el video con los valores que entran como parámetro
-	 * @param id - Id del video.
-	 * @param name - Nombre del video. name != null
-	 * @param duration - Duración en minutos del video.
-	 */
-	public Vuelo(@JsonProperty(value="id")int id, @JsonProperty(value="name")String name,@JsonProperty(value="duration") int duration) {
+	
+	public Vuelo(@JsonProperty(value="id")int id, @JsonProperty(value="Tipo")String tipo,@JsonProperty(value="AeropuertoLL") String AeropuertoLL, @JsonProperty(value="AeropuertoSA") String AeropuertSA, @JsonProperty(value="Distancia") int distancia,@JsonProperty(value="Duracion") int duracion) {
 		super();
 		this.id = id;
-		this.name = name;
-		this.duration = duration;
-	}
-	
-	/**
-	 * Método getter del atributo duration
-	 * @return duración del video en minutos
-	 */
-	public int getDuration() {
-		return duration;
+		this.tipo = tipo;
+		this.AeropuertoLL= AeropuertoLL;
+		this.AeropuertoSA=AeropuertSA;
+		this.duracion=duracion;
+		this.distancia=distancia;
 	}
 
-	/**
-	 * Método setter del atributo duration <b>post: </b> La duración del video
-	 * ha sido cambiado con el valor que entra como parámetro
-	 * @param duration - Duración en minutos del video.
-	 */
-	public void setDuration(int duration) {
-		this.duration = duration;
-	}
-
-	/**
-	 * Método getter del atributo id
-	 * @return id del video
-	 */
 	public int getId() {
 		return id;
 	}
 
-	/**
-	 * Método setter del atributo id <b>post: </b> El id del video ha sido
-	 * cambiado con el valor que entra como parámetro
-	 * @param id - Id del video
-	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 
-	/**
-	 * Método getter del atributo name
-	 * @return nombre del video
-	 */
-	public String getName() {
-		return name;
+	public String getTipo() {
+		return tipo;
 	}
 
-	/**
-	 * Método setter del atributo name <b>post: </b> El nombre del video ha sido
-	 * cambiado con el valor que entra como parámetro
-	 * @param name - Id del video
-	 */
-	public void setName(String name) {
-		this.name = name;
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
+
+	public String getAeropuertoLL() {
+		return AeropuertoLL;
+	}
+
+	public void setAeropuertoLL(String aeropuertoLL) {
+		AeropuertoLL = aeropuertoLL;
+	}
+
+	public String getAeropuertoSA() {
+		return AeropuertoSA;
+	}
+
+	public void setAeropuertoSA(String aeropuertoSA) {
+		AeropuertoSA = aeropuertoSA;
+	}
+
+	public int getDistancia() {
+		return distancia;
+	}
+
+	public void setDistancia(int distancia) {
+		this.distancia = distancia;
+	}
+
+	public int getDuracion() {
+		return duracion;
+	}
+
+	public void setDuracion(int duracion) {
+		this.duracion = duracion;
+	}
+	
+	
 
 
 
