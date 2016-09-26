@@ -17,19 +17,19 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * Clase que representa una arreglo de Video
  * @author Juan
  */
-public class ListaVideos {
+public class ListaUsuarios {
 	
 	/**
 	 * List con los videos
 	 */
 	@JsonProperty(value="videos")
-	private List<Video> videos;
+	private List<Vuelo> videos;
 	
 	/**
 	 * Constructor de la clase ListaVideos
 	 * @param videos - videos para agregar al arreglo de la clase
 	 */
-	public ListaVideos( @JsonProperty(value="videos")List<Video> videos){
+	public ListaUsuarios( @JsonProperty(value="videos")List<Vuelo> videos){
 		this.videos = videos;
 	}
 
@@ -37,7 +37,7 @@ public class ListaVideos {
 	 * Método que retorna la lista de videos
 	 * @return  List - List con los videos
 	 */
-	public List<Video> getVideos() {
+	public List<Vuelo> getVideos() {
 		return videos;
 	}
 
@@ -45,7 +45,7 @@ public class ListaVideos {
 	 * Método que asigna la lista de videos que entra como parametro
 	 * @param  videos - List con los videos ha agregar
 	 */
-	public void setVideo(List<Video> videos) {
+	public void setVideo(List<Vuelo> videos) {
 		this.videos = videos;
 	}
 	
