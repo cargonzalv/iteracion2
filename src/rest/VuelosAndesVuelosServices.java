@@ -11,6 +11,8 @@
 package rest;
 
 
+import java.util.ArrayList;
+
 import javax.servlet.ServletContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -18,6 +20,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -59,113 +62,34 @@ public class VuelosAndesVuelosServices {
 	}
 	
 
-	/**
-	 * Método que expone servicio REST usando GET que da todos los videos de la base de datos.
-	 * <b>URL: </b> http://"ip o nombre de host":8080/VideoAndes/rest/videos
-	 * @return Json con todos los videos de la base de datos O json con 
-     * el error que se produjo
-	 */
-	@GET
-	@Path("vuelos")
-	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getVuelos() {
-		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
-		ListaVuelos vuelos;
-		try {
-			vuelos = tm.darVuelos();
-		} catch (Exception e) {
-			return Response.status(500).entity(doErrorMessage(e)).build();
-		}
-		return Response.status(200).entity(vuelos).build();
-	}
-
-
-    /**
-     * Método que expone servicio REST usando GET que busca el video con el nombre que entra como parámetro
-     * <b>URL: </b> http://"ip o nombre de host":8080/VideoAndes/rest/videos/name/"name para la busqueda"
-     * @param name - Nombre del video a buscar que entra en la URL como parámetro 
-     * @return Json con el/los videos encontrados con el nombre que entra como parámetro o json con 
-     * el error que se produjo
-     */
-	@GET
-	@Path("vuelos/name/{name}")
-	@Produces({ MediaType.APPLICATION_JSON })
-	public Response getVuelosPorAerolinea(@javax.ws.rs.PathParam("name") String name) {
-		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
-		ListaVuelos vuelos;
-		try {
-			if (name == null || name.length() == 0)
-				throw new Exception("Nombre del video no valido");
-			vuelos = tm.buscarVuelosPorAerolinea(name);
-		} catch (Exception e) {
-			return Response.status(500).entity(doErrorMessage(e)).build();
-		}
-		return Response.status(200).entity(vuelos).build();
-	}
-	
-  
-
-
-    /**
-     * Método que expone servicio REST usando PUT que agrega el video que recibe en Json
-     * <b>URL: </b> http://"ip o nombre de host":8080/VideoAndes/rest/videos/video
-     * @param video - video a agregar
-     * @return Json con el video que agrego o Json con el error que se produjo
-     */
-	@PUT
-	@Path("vuelos")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response addVuelo(Vuelo vuelo) {
-		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
-		try {
-			tm.addVuelo(vuelo);
-		} catch (Exception e) {
-			return Response.status(500).entity(doErrorMessage(e)).build();
-		}
-		return Response.status(200).entity(vuelo).build();
-	}
-	
-    
-	
-    /**
-     * Método que expone servicio REST usando POST que actualiza el video que recibe en Json
-     * <b>URL: </b> http://"ip o nombre de host":8080/VideoAndes/rest/videos/video
-     * @param video - video a actualizar. 
-     * @return Json con el video que actualizo o Json con el error que se produjo
-     */
 	@POST
-	@Path("vuelos/vuelo")
+	@Path("vuelos/vuelo/{idVuelo}/AsociarAvion/avion/{idAvion}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateVideo(Vuelo video) {
-		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
-		try {
-			tm.updateVuelo(video);
-		} catch (Exception e) {
-			return Response.status(500).entity(doErrorMessage(e)).build();
+	public Response asociarAvion(@javax.ws.rs.PathParam("idVuelo") int idVuelo, @javax.ws.rs.PathParam("idAvion") String Avion){
+		VuelosAndesMaster tm=new VuelosAndesMaster(getPath());
+		Vuelo vuelo=null;
+		try{
+			tm.asociarVuelo(idVuelo, Avion);
+			vuelo=tm.darVuelo(idVuelo);
 		}
-		return Response.status(200).entity(video).build();
-	}
-	
-    /**
-     * Método que expone servicio REST usando DELETE que actualiza el video que recibe en Json
-     * <b>URL: </b> http://"ip o nombre de host":8080/VideoAndes/rest/videos/video
-     * @param video - video a aliminar. 
-     * @return Json con el video que elimino o Json con el error que se produjo
-     */
-	@DELETE
-	@Path("vuelos/video")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteVideo(Vuelo vuelo) {
-		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
-		try {
-			tm.deleteVuelo(vuelo);
-		} catch (Exception e) {
+		catch (Exception e) {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 		return Response.status(200).entity(vuelo).build();
+	}
+	@GET
+	@Path("vuelos/vuelosMasPopulares")
+	public Response vuelosMasPopulares(){
+		VuelosAndesMaster tm= new VuelosAndesMaster(getPath());
+		ArrayList<Vuelo> vuelos= new ArrayList<>();
+		try{
+			vuelos=tm.darVueloMasPopulares();
+		}
+		catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(vuelos).build();
 	}
 
 
