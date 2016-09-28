@@ -23,7 +23,7 @@ public class ListaVuelos {
 	 * List con los videos
 	 */
 	@JsonProperty(value="videos")
-	private List<Vuelo> videos;
+	private List<Vuelo> vuelos;
 	
 	/**
 	 * Constructor de la clase ListaVideos
