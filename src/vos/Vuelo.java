@@ -4,7 +4,6 @@ package vos;
 import java.util.Date;
 
 import org.codehaus.jackson.annotate.*;
-import oracle.sql.DATE;
 
 /**
  * Clase que representa un Vuelo
@@ -21,37 +20,55 @@ public class Vuelo {
 	
 	private int frecuencia;
 	
-	private String tipoViaje;
 	private String aerolinea;
 	private String avion;
+	
+	private boolean realizado;
+	
+	private String tipoViaje;
+	
+	private String tipoVuelo;
 
 	
-	@JsonProperty(value="AeropuertoLL")
-	private String AeropuertoLL;
+	@JsonProperty(value="aeropuertoLL")
+	private Aeropuerto aeropuertoLL;
 	
-	@JsonProperty(value="AeropuertoSA")
-	private String AeropuertoSA;
+	@JsonProperty(value="aeropuertoSA")
+	private Aeropuerto aeropuertoSA;
 	
 	@JsonProperty(value="Distancia")
 	private double distancia;
 	
 	@JsonProperty(value="Duracion")
 	private String duracion;
+	
+	public final static String VIAJEROS = "Viajeros";
+	public final static String CARGA = "Carga";
 
-	public Vuelo(int id, Date horaSalida, Date horaLlegada, int frecuencia, String tipoViaje, String aerolinea,
-			String avion, String aeropuertoLL, String aeropuertoSA, double distancia, String duracion) {
+	public Vuelo(int id, Date horaSalida, Date horaLlegada, int frecuencia,String tipoViaje, String aerolinea,
+			String avion, Aeropuerto aeropuertoSA, Aeropuerto aeropuertoLL, double distancia, String duracion, boolean realizado, String tipoVuelo) {
 		super();
 		this.id = id;
 		this.horaSalida = horaSalida;
 		this.horaLlegada = horaLlegada;
 		this.frecuencia = frecuencia;
-		this.tipoViaje = tipoViaje;
 		this.aerolinea = aerolinea;
 		this.avion = avion;
-		AeropuertoLL = aeropuertoLL;
-		AeropuertoSA = aeropuertoSA;
+		this.aeropuertoLL = aeropuertoLL;
+		this.aeropuertoSA = aeropuertoSA;
 		this.distancia = distancia;
 		this.duracion = duracion;
+		this.realizado = realizado;
+		this.tipoViaje = tipoViaje;
+		this.tipoVuelo = tipoVuelo;
+	}
+
+	public boolean isRealizado() {
+		return realizado;
+	}
+
+	public void setRealizado(boolean realizado) {
+		this.realizado = realizado;
 	}
 
 	public int getId() {
@@ -86,13 +103,7 @@ public class Vuelo {
 		this.frecuencia = frecuencia;
 	}
 
-	public String getTipoViaje() {
-		return tipoViaje;
-	}
-
-	public void setTipoViaje(String tipoViaje) {
-		this.tipoViaje = tipoViaje;
-	}
+	
 
 	public String getAerolinea() {
 		return aerolinea;
@@ -110,20 +121,20 @@ public class Vuelo {
 		this.avion = avion;
 	}
 
-	public String getAeropuertoLL() {
-		return AeropuertoLL;
+	public Aeropuerto getAeropuertoLL() {
+		return aeropuertoLL;
 	}
 
-	public void setAeropuertoLL(String aeropuertoLL) {
-		AeropuertoLL = aeropuertoLL;
+	public void setAeropuertoLL(Aeropuerto aeropuertoLL) {
+		this.aeropuertoLL = aeropuertoLL;
 	}
 
-	public String getAeropuertoSA() {
-		return AeropuertoSA;
+	public Aeropuerto getAeropuertoSA() {
+		return aeropuertoSA;
 	}
 
-	public void setAeropuertoSA(String aeropuertoSA) {
-		AeropuertoSA = aeropuertoSA;
+	public void setAeropuertoSA(Aeropuerto aeropuertoSA) {
+		this.aeropuertoSA = aeropuertoSA;
 	}
 
 	public double getDistancia() {
@@ -140,6 +151,22 @@ public class Vuelo {
 
 	public void setDuracion(String duracion) {
 		this.duracion = duracion;
+	}
+
+	public String getTipoViaje() {
+		return tipoViaje;
+	}
+
+	public void setTipoViaje(String tipoVuelo) {
+		this.tipoViaje = tipoVuelo;
+	}
+
+	public String getTipoVuelo() {
+		return tipoVuelo;
+	}
+
+	public void setTipoVuelo(String tipoVuelo) {
+		this.tipoVuelo = tipoVuelo;
 	}
 
 	

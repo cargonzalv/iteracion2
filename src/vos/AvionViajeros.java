@@ -4,8 +4,8 @@ public class AvionViajeros extends Avion {
 	private int sillasEjecutivas;
 	private int sillasEconomicas;
 	
-	public AvionViajeros(String numSerie, String modelo, String marca, int anioFabrica, int sillasEjecutivas,int sillasEconomicas) {
-		super(numSerie, modelo, marca, anioFabrica);
+	public AvionViajeros(String numSerie, String modelo, String marca, int anioFabrica,String tipo, int sillasEjecutivas,int sillasEconomicas) {
+		super(numSerie, modelo, marca, anioFabrica, tipo);
 		// TODO Auto-generated constructor stub
 		this.sillasEconomicas=sillasEconomicas;
 		this.sillasEjecutivas=sillasEjecutivas;

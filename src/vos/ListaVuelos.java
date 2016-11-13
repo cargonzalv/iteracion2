@@ -1,13 +1,4 @@
-/**-------------------------------------------------------------------
- * $Id$
- * Universidad de los Andes (Bogotá - Colombia)
- * Departamento de Ingeniería de Sistemas y Computación
- *
- * Materia: Sistemas Transaccionales
- * Ejercicio: VideoAndes
- * Autor: Juan Felipe García - jf.garcia268@uniandes.edu.co
- * -------------------------------------------------------------------
- */
+
 package vos;
 
 import java.util.List;
@@ -20,33 +11,33 @@ import org.codehaus.jackson.annotate.JsonProperty;
 public class ListaVuelos {
 	
 	/**
-	 * List con los videos
+	 * List con los vuelos
 	 */
-	@JsonProperty(value="videos")
+	@JsonProperty(value="vuelos")
 	private List<Vuelo> vuelos;
 	
 	/**
-	 * Constructor de la clase ListaVideos
-	 * @param videos - videos para agregar al arreglo de la clase
+	 * Constructor de la clase Listavuelos
+	 * @param vuelos - vuelos para agregar al arreglo de la clase
 	 */
-	public ListaVuelos( @JsonProperty(value="videos")List<Vuelo> videos){
-		this.videos = videos;
+	public ListaVuelos( @JsonProperty(value="vuelos")List<Vuelo> vuelos){
+		this.vuelos = vuelos;
 	}
 
 	/**
-	 * Método que retorna la lista de videos
-	 * @return  List - List con los videos
+	 * Método que retorna la lista de vuelos
+	 * @return  List - List con los vuelos
 	 */
-	public List<Vuelo> getVideos() {
-		return videos;
+	public List<Vuelo> getvuelos() {
+		return vuelos;
 	}
 
 	/**
-	 * Método que asigna la lista de videos que entra como parametro
-	 * @param  videos - List con los videos ha agregar
+	 * Método que asigna la lista de vuelos que entra como parametro
+	 * @param  vuelos - List con los vuelos ha agregar
 	 */
-	public void setVideo(List<Vuelo> videos) {
-		this.videos = videos;
+	public void setVideo(List<Vuelo> vuelos) {
+		this.vuelos = vuelos;
 	}
 	
 }

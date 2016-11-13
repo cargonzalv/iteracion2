@@ -22,10 +22,9 @@ public class Usuarios {
 	private String rol;
 
 	private String clave;
-	private String nacionalidad;
-	private String aerolineaFrecuentada;
+	private String aerloneaF;
 
-	public Usuarios(int id, String tipo, String nombre, String rol, String clave, String nacionalidad,
+	public Usuarios(int id, String tipo, String nombre, String rol, String clave,
 			String aerloneaF) {
 		super();
 		this.id = id;
@@ -33,7 +32,6 @@ public class Usuarios {
 		this.nombre = nombre;
 		this.rol = rol;
 		this.clave = clave;
-		this.nacionalidad = nacionalidad;
 		this.aerloneaF = aerloneaF;
 	}
 	public int getId() {
@@ -66,12 +64,7 @@ public class Usuarios {
 	public void setClave(String clave) {
 		this.clave = clave;
 	}
-	public String getNacionalidad() {
-		return nacionalidad;
-	}
-	public void setNacionalidad(String nacionalidad) {
-		this.nacionalidad = nacionalidad;
-	}
+
 	public String getAerloneaF() {
 		return aerloneaF;
 	}

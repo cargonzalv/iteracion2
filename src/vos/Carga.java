@@ -4,13 +4,13 @@ public class Carga {
 	private int trackingNumber;
 	private String contenido;
 	private double peso;
-	private double voulumen;
+	private double volumen;
 	public Carga(int trackingNumber, String contenido, double peso, double voulumen) {
 		super();
 		this.trackingNumber = trackingNumber;
 		this.contenido = contenido;
 		this.peso = peso;
-		this.voulumen = voulumen;
+		this.volumen = voulumen;
 	}
 	public int getTrackingNumber() {
 		return trackingNumber;
@@ -30,11 +30,11 @@ public class Carga {
 	public void setPeso(double peso) {
 		this.peso = peso;
 	}
-	public double getVoulumen() {
-		return voulumen;
+	public double getVolumen() {
+		return volumen;
 	}
-	public void setVoulumen(double voulumen) {
-		this.voulumen = voulumen;
+	public void setVolumen(double voulumen) {
+		this.volumen = voulumen;
 	}
 	
 

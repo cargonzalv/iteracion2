@@ -1,20 +1,20 @@
 package vos;
 
 public class AvionCarga extends Avion {
-	private double carga;
+	private double cargaMax;
 
-	public AvionCarga(String numSerie, String modelo, String marca, int anioFabrica, double carga) {
-		super(numSerie, modelo, marca, anioFabrica);
+	public AvionCarga(String numSerie, String modelo, String marca, int anioFabrica, String tipo, double cargaMax) {
+		super(numSerie, modelo, marca, anioFabrica, tipo);
 		// TODO Auto-generated constructor stub
-		this.carga=carga;
+		this.cargaMax=cargaMax;
 	}
 
-	public double getCarga() {
-		return carga;
+	public double getCargaMax() {
+		return cargaMax;
 	}
 
-	public void setCarga(double carga) {
-		this.carga = carga;
+	public void setCargaMax(double cargaMax) {
+		this.cargaMax = cargaMax;
 	}
 	
 

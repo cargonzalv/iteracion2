@@ -1,6 +1,6 @@
 package vos;
 
-public class Avion {
+public class ConsultaAvion {
 	public static final String CARGA = "Carga";
 	public static final String VIAJEROS = "Viajeros";
 	private String numSerie;
@@ -8,13 +8,22 @@ public class Avion {
 	private String marca;
 	private int anioFabrica;
 	private String tipo;
-	public Avion(String numSerie, String modelo, String marca, int anioFabrica, String tipo) {
+	private double millas;
+	/**
+	 * @param numSerie
+	 * @param modelo
+	 * @param marca
+	 * @param anioFabrica
+	 * @param tipo
+	 */
+	public ConsultaAvion(String numSerie, String modelo, String marca, int anioFabrica, String tipo, double millas) {
 		super();
 		this.numSerie = numSerie;
 		this.modelo = modelo;
 		this.marca = marca;
 		this.anioFabrica = anioFabrica;
-		this.setTipo(tipo);
+		this.tipo = tipo;
+		this.setMillas(millas);
 	}
 	public String getNumSerie() {
 		return numSerie;
@@ -46,6 +55,16 @@ public class Avion {
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
 	}
-	
-	
+	public static String getCarga() {
+		return CARGA;
+	}
+	public static String getViajeros() {
+		return VIAJEROS;
+	}
+	public double getMillas() {
+		return millas;
+	}
+	public void setMillas(double millas) {
+		this.millas = millas;
+	}
 }

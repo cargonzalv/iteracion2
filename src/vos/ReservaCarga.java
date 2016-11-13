@@ -1,16 +1,20 @@
 package vos;
 
+import java.util.Date;
+
 public class ReservaCarga extends Reserva {
 	private int idVuelo;
 	private int idRemitente;
 	private int idCarga;
+	private String tipoIdRemitente;
 
-	public ReservaCarga(int id, int idVuelo, int idRemitente, int idCarga) {
-		super(id);
+	public ReservaCarga(int id, int idVuelo, int idRemitente, String tipoIdRemitente, int idCarga, String fecha, String tipoReserva, String aeroSal, String aeroLleg) {
+		super(id,fecha,tipoReserva, aeroSal, aeroLleg);
 		// TODO Auto-generated constructor stub
 		this.idCarga=idCarga;
 		this.idRemitente= idRemitente;
 		this.idVuelo=idVuelo;
+		this.setTipoIdRemitente(tipoIdRemitente);
 		
 			
 		
@@ -38,6 +42,14 @@ public class ReservaCarga extends Reserva {
 
 	public void setIdCarga(int idCarga) {
 		this.idCarga = idCarga;
+	}
+
+	public String getTipoIdRemitente() {
+		return tipoIdRemitente;
+	}
+
+	public void setTipoIdRemitente(String tipoIdRemitente) {
+		this.tipoIdRemitente = tipoIdRemitente;
 	}
 	
 
