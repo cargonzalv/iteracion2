@@ -776,7 +776,7 @@ public class DAOTablaVuelos {
 		}
 		else
 		{
-			throw new Exception("El avión con el que se quiere vincular la reserva no es del tipo "+ vuelo.getTipoViaje());
+			throw new Exception("El aviï¿½n con el que se quiere vincular la reserva no es del tipo "+ vuelo.getTipoViaje());
 		}
 
 
@@ -844,6 +844,189 @@ public class DAOTablaVuelos {
 	public ArrayList<Vuelo> getVuelosMasPopulares() {
 		return null;
 
+	}
+	
+	public ArrayList<Vuelo> getVuelosAeropuertoAerolineaOrganizado(String aeropuerto, String aerolinea, String organizacion) throws SQLException {
+		Vuelo vuelo=null;
+		ArrayList<Vuelo> vuelos = new ArrayList<Vuelo>();
+		String sql="SELECT * FROM ISIS2304A131620.VUELO WHERE ((ISIS2304A131620.VUELO.AEROPUERTO_SALIDA =" + aeropuerto+ "OR ISIS2304A131620.VUELO.AEROPUERTO_LLEGADA = "+aeropuerto+")AND ISIS2304A131620.VUELO.AEROLINEA = "+aerolinea+") ORDER BY "+organizacion+";";
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		ResultSet rs=prepStmt.executeQuery();
+		while(rs.next()){
+			int id= rs.getInt("ID");
+			Date horaSalida= rs.getDate("HORA_SALIDA");
+			Date horaLlegada=rs.getDate("HORA_LLEGADA");
+			String duracion =rs.getString("DURACION");
+			double distancia= rs.getDouble("DISTANCIA");
+			int frecuencia =rs.getInt("FRECUENCIA");
+			String tipoViaje= rs.getString("TIPO_VIAJE");
+			aerolinea = rs.getString("AEROLINEA");
+			String avion = rs.getString("AVION");
+			String aeropuertoLL= rs.getString("AEROPUERTO_SALIDA");
+			String aeropuertoSA= rs.getString("AEROPUERTO_LLEGADA");
+			Aeropuerto aeropuertoLLegada = getAeropuerto(aeropuertoLL);
+			Aeropuerto aeropuertoSalida= getAeropuerto(aeropuertoSA);
+			String realizado = rs.getString("REALIZADO");
+			boolean realizadoo = false;
+			if (realizado.equals("N"))
+			{}
+			else if(realizado.equals("S"))
+			{
+				realizadoo = true;
+			}
+			String tipoVuelo = rs.getString("TIPO_VUELO");
+
+			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);		
+			vuelos.add(vuelo);
+		}
+		return vuelos;
+	}
+	
+	public ArrayList<Vuelo> getVuelosAeropuertoAeronaveOrganizado(String aeropuerto, String aeronave, String organizacion) throws SQLException {
+		Vuelo vuelo=null;
+		ArrayList<Vuelo> vuelos = new ArrayList<Vuelo>();
+		String sql="SELECT * FROM ISIS2304A131620.VUELO JOIN ISIS2304A131620.VIAJE ON ISIS2304A131620.VUELO.ID= ISIS2304A131620.VIAJE.ID_VUELO WHERE ((ISIS2304A131620.VUELO.AEROPUERTO_SALIDA =" + aeropuerto+ "OR ISIS2304A131620.VUELO.AEROPUERTO_LLEGADA = "+aeropuerto+")AND ISIS2304A131620.VIAJE.AVION = "+aeronave+") ORDER BY"+organizacion+";";
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		ResultSet rs=prepStmt.executeQuery();
+		while(rs.next()){
+			int id= rs.getInt("ID");
+			Date horaSalida= rs.getDate("HORA_SALIDA");
+			Date horaLlegada=rs.getDate("HORA_LLEGADA");
+			String duracion =rs.getString("DURACION");
+			double distancia= rs.getDouble("DISTANCIA");
+			int frecuencia =rs.getInt("FRECUENCIA");
+			String tipoViaje= rs.getString("TIPO_VIAJE");
+			String aerolinea = rs.getString("AEROLINEA");
+			String avion = rs.getString("AVION");
+			String aeropuertoLL= rs.getString("AEROPUERTO_SALIDA");
+			String aeropuertoSA= rs.getString("AEROPUERTO_LLEGADA");
+			Aeropuerto aeropuertoLLegada = getAeropuerto(aeropuertoLL);
+			Aeropuerto aeropuertoSalida= getAeropuerto(aeropuertoSA);
+			String realizado = rs.getString("REALIZADO");
+			boolean realizadoo = false;
+			if (realizado.equals("N"))
+			{}
+			else if(realizado.equals("S"))
+			{
+				realizadoo = true;
+			}
+			String tipoVuelo = rs.getString("TIPO_VUELO");
+
+			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);		
+			vuelos.add(vuelo);
+		}
+		return vuelos;
+	}
+	public ArrayList<Vuelo> getVuelosAeropuertoRangoFechasOrganizado(String aeropuerto, Date fechaMin, Date fechaMax, String organizacion) throws SQLException {
+		Vuelo vuelo=null;
+		ArrayList<Vuelo> vuelos = new ArrayList<Vuelo>();
+		//TODO fecha llegada
+		String sql="SELECT * FROM ISIS2304A131620.VUELO JOIN ISIS2304A131620.VIAJE ON ISIS2304A131620.VUELO.ID= ISIS2304A131620.VIAJE.ID_VUELO WHERE ((ISIS2304A131620.VUELO.AEROPUERTO_SALIDA =" + aeropuerto+ "OR ISIS2304A131620.VUELO.AEROPUERTO_LLEGADA = "+aeropuerto+")AND "+fechaMin+" <= ISIS2304A131620.VUELO.HORA_SALIDA AND "+fechaMax+" > ISIS2304A131620.VUELO.HORA_SALIDA) ORDER BY"+organizacion+";";
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		ResultSet rs=prepStmt.executeQuery();
+		while(rs.next()){
+			int id= rs.getInt("ID");
+			Date horaSalida= rs.getDate("HORA_SALIDA");
+			Date horaLlegada=rs.getDate("HORA_LLEGADA");
+			String duracion =rs.getString("DURACION");
+			double distancia= rs.getDouble("DISTANCIA");
+			int frecuencia =rs.getInt("FRECUENCIA");
+			String tipoViaje= rs.getString("TIPO_VIAJE");
+			String aerolinea = rs.getString("AEROLINEA");
+			String avion = rs.getString("AVION");
+			String aeropuertoLL= rs.getString("AEROPUERTO_SALIDA");
+			String aeropuertoSA= rs.getString("AEROPUERTO_LLEGADA");
+			Aeropuerto aeropuertoLLegada = getAeropuerto(aeropuertoLL);
+			Aeropuerto aeropuertoSalida= getAeropuerto(aeropuertoSA);
+			String realizado = rs.getString("REALIZADO");
+			boolean realizadoo = false;
+			if (realizado.equals("N"))
+			{}
+			else if(realizado.equals("S"))
+			{
+				realizadoo = true;
+			}
+			String tipoVuelo = rs.getString("TIPO_VUELO");
+
+			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);		
+			vuelos.add(vuelo);
+		}
+		return vuelos;
+	}
+	public ArrayList<Vuelo> getVuelosAeropuertoHoraSalidaLlegadaOrganizado(String aeropuerto, Date fechaLlgada, Date fechaSalida, String organizacion) throws SQLException {
+		Vuelo vuelo=null;
+		ArrayList<Vuelo> vuelos = new ArrayList<Vuelo>();
+		//TODO hora LLegada
+		String sql="SELECT * FROM ISIS2304A131620.VUELO JOIN ISIS2304A131620.VIAJE ON ISIS2304A131620.VUELO.ID= ISIS2304A131620.VIAJE.ID_VUELO WHERE ((ISIS2304A131620.VUELO.AEROPUERTO_SALIDA =" + aeropuerto+ "OR ISIS2304A131620.VUELO.AEROPUERTO_LLEGADA = "+aeropuerto+")AND "+fechaLlgada+"= ISIS2304A131620.VUELO.HORA_LLEGADA OR "+fechaSalida+"= ISIS2304A131620.VUELO.HORA_SALIDA) ORDER BY"+organizacion+";";
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		ResultSet rs=prepStmt.executeQuery();
+		while(rs.next()){
+			int id= rs.getInt("ID");
+			Date horaSalida= rs.getDate("HORA_SALIDA");
+			Date horaLlegada=rs.getDate("HORA_LLEGADA");
+			String duracion =rs.getString("DURACION");
+			double distancia= rs.getDouble("DISTANCIA");
+			int frecuencia =rs.getInt("FRECUENCIA");
+			String tipoViaje= rs.getString("TIPO_VIAJE");
+			String aerolinea = rs.getString("AEROLINEA");
+			String avion = rs.getString("AVION");
+			String aeropuertoLL= rs.getString("AEROPUERTO_SALIDA");
+			String aeropuertoSA= rs.getString("AEROPUERTO_LLEGADA");
+			Aeropuerto aeropuertoLLegada = getAeropuerto(aeropuertoLL);
+			Aeropuerto aeropuertoSalida= getAeropuerto(aeropuertoSA);
+			String realizado = rs.getString("REALIZADO");
+			boolean realizadoo = false;
+			if (realizado.equals("N"))
+			{}
+			else if(realizado.equals("S"))
+			{
+				realizadoo = true;
+			}
+			String tipoVuelo = rs.getString("TIPO_VUELO");
+
+			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);		
+			vuelos.add(vuelo);
+		}
+		return vuelos;
+	}
+
+
+	public ArrayList<Vuelo> getVuelosAeropuertoNoParametro(String idAeropuerto, Date fecha1, Date fecha2,
+			String aerolinea, String aeronave, Date fechaSalida, Date fechaLlegada) throws Exception{
+		Vuelo vuelo=null;
+		ArrayList<Vuelo> vuelos = new ArrayList<Vuelo>();
+		//TODO Fecha Llegada
+		String sql="SELECT * FROM ISIS2304A131620.VUELO JOIN ISIS2304A131620.VIAJE ON ISIS2304A131620.VUELO.ID= ISIS2304A131620.VIAJE.ID_VUELO WHERE (((ISIS2304A131620.VUELO.AEROPUERTO_SALIDA =" + idAeropuerto+ "OR ISIS2304A131620.VUELO.AEROPUERTO_LLEGADA = "+idAeropuerto+")AND "+fecha1+">= ISIS2304A131620.VIAJE.HORA_SALIDA OR "+fecha2+"= ISIS2304A131620.VIAJE.HORA_SALIDA) AND ISIS2304A131620.VUELO.AEROLINEA!="+aerolinea+" AND ISIS2304A131620.VIAJE.AVION!="+aeronave+"AND ISIS2304A131620.VIAJE.HORA_SALIDA!="+fechaSalida+";";
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		ResultSet rs=prepStmt.executeQuery();
+		while(rs.next()){
+			int id= rs.getInt("ID");
+			Date horaSalida= rs.getDate("HORA_SALIDA");
+			Date horaLlegada=rs.getDate("HORA_LLEGADA");
+			String duracion =rs.getString("DURACION");
+			double distancia= rs.getDouble("DISTANCIA");
+			int frecuencia =rs.getInt("FRECUENCIA");
+			String tipoViaje= rs.getString("TIPO_VIAJE");
+		    aerolinea = rs.getString("AEROLINEA");
+			String avion = rs.getString("AVION");
+			String aeropuertoLL= rs.getString("AEROPUERTO_SALIDA");
+			String aeropuertoSA= rs.getString("AEROPUERTO_LLEGADA");
+			Aeropuerto aeropuertoLLegada = getAeropuerto(aeropuertoLL);
+			Aeropuerto aeropuertoSalida= getAeropuerto(aeropuertoSA);
+			String realizado = rs.getString("REALIZADO");
+			boolean realizadoo = false;
+			if (realizado.equals("N"))
+			{}
+			else if(realizado.equals("S"))
+			{
+				realizadoo = true;
+			}
+			String tipoVuelo = rs.getString("TIPO_VUELO");
+
+			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);		
+			vuelos.add(vuelo);
+		}
+		return vuelos;
 	}
 
 

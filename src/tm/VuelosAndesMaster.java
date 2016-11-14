@@ -6,7 +6,9 @@ import java.io.FileInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
 
 import dao.DAOTablaAviones;
@@ -760,7 +762,7 @@ public class VuelosAndesMaster {
 		DAOTablaReservas daoReservas = new DAOTablaReservas();
 		try 
 		{
-			//////Transacción
+			//////Transacciï¿½n
 			this.conn = darConexion();
 			daoReservas.setConn(conn);
 			conn.setAutoCommit(false);
@@ -796,7 +798,7 @@ public class VuelosAndesMaster {
 		Reserva r  = null;
 		try 
 		{
-			//////Transacción
+			//////Transacciï¿½n
 			this.conn = darConexion();
 			daoReservas.setConn(conn);
 			conn.setAutoCommit(false);
@@ -834,8 +836,8 @@ public class VuelosAndesMaster {
 	
 
 	/**
-	 * Método que modela la transacción que agrega unA solo reserva a la base de datos.
-	 * <b> post: </b> se ha agregado el reserva que entra como parámetro
+	 * Mï¿½todo que modela la transacciï¿½n que agrega unA solo reserva a la base de datos.
+	 * <b> post: </b> se ha agregado el reserva que entra como parï¿½metro
 	 * @param reserva - el reserva a agregar. reserva != null
 	 * @throws Exception - cualquier error que se genera agregando el reserva
 	 */
@@ -843,7 +845,7 @@ public class VuelosAndesMaster {
 		DAOTablaReservas daoReservasCarga = new DAOTablaReservas();
 		try 
 		{
-			//////Transacción
+			//////Transacciï¿½n
 			this.conn = darConexion();
 			daoReservasCarga.setConn(conn);
 			conn.setAutoCommit(false);
@@ -884,6 +886,100 @@ public class VuelosAndesMaster {
 			conn.setReadOnly(true);
 			daoVuelos.setConn(conn);
 			vuelos=daoVuelos.getVuelosAeropuerto(idAeropuerto);
+		}
+		catch (SQLException e) {
+			System.err.println("generalException:"+e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}
+		catch (Exception e) {
+			System.err.println("generalException:"+e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+		}
+		finally {
+			try{
+				daoVuelos.cerrarVuelos();
+				if(this.conn!=null){
+					this.conn.close();
+				}
+			}catch (SQLException e2) {
+				System.err.println("generalException:"+e2.getMessage());
+				e2.printStackTrace();
+				throw e2;
+			}
+		}
+		return vuelos;	}
+	
+	public ArrayList<Vuelo> darVueloAeropuertoParametroOrganizado(String aeropuerto, String tipoParametro,String parametro, String organizacion) throws Exception {
+		DAOTablaVuelos daoVuelos= new DAOTablaVuelos();
+		ArrayList<Vuelo> vuelos= null;
+		try{
+			this.conn=darConexion();
+			daoVuelos.setConn(conn);
+			conn.setAutoCommit(false);
+			conn.setReadOnly(true);
+			if(tipoParametro.equals("Aeronave")){
+				vuelos=daoVuelos.getVuelosAeropuertoAeronaveOrganizado(aeropuerto,parametro,organizacion);
+			}
+			else if(tipoParametro.equals("Aerolinea")){
+				vuelos=daoVuelos.getVuelosAeropuertoAerolineaOrganizado(aeropuerto, parametro, organizacion);
+			}
+			else if(tipoParametro.equals("Rango Fechas")){
+				SimpleDateFormat spld=new SimpleDateFormat("dd/M/yy");
+				String[] fechas= parametro.split(";");
+				Date fechaMin=spld.parse(fechas[0]);
+				Date fechaMax=spld.parse(fechas[1]);
+				vuelos=daoVuelos.getVuelosAeropuertoRangoFechasOrganizado(aeropuerto, fechaMin, fechaMax, organizacion);
+				
+			}
+			else if(tipoParametro.equals("Fechas Salida LLegada")){
+				SimpleDateFormat spld=new SimpleDateFormat("dd/M/yy");
+				String[] fechas= parametro.split(";");
+				Date fechaMin=spld.parse(fechas[0]);
+				Date fechaMax=spld.parse(fechas[1]);
+				vuelos=daoVuelos.getVuelosAeropuertoHoraSalidaLlegadaOrganizado(aeropuerto, fechaMin, fechaMax, organizacion);
+				
+			}
+			
+		
+		}
+		catch (SQLException e) {
+			System.err.println("generalException:"+e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}
+		catch (Exception e) {
+			System.err.println("generalException:"+e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+		}
+		finally {
+			try{
+				daoVuelos.cerrarVuelos();
+				if(this.conn!=null){
+					this.conn.close();
+				}
+			}catch (SQLException e2) {
+				System.err.println("generalException:"+e2.getMessage());
+				e2.printStackTrace();
+				throw e2;
+			}
+		}
+		return vuelos;
+	}
+	
+	public ArrayList<Vuelo> darVuelosAeropuertoNoParametros(String idAeropuerto, Date fecha1, Date fecha2, String aerolinea, String aeronave,Date fechaSalida, Date fechaLlegada)throws Exception {
+		DAOTablaVuelos daoVuelos= new DAOTablaVuelos();
+		ArrayList<Vuelo> vuelos= null;
+		try{
+			this.conn=darConexion();
+			conn.setAutoCommit(false);
+			conn.setReadOnly(true);
+			daoVuelos.setConn(conn);
+			vuelos=daoVuelos.getVuelosAeropuertoNoParametro(idAeropuerto, fecha1, fecha2, aerolinea, aeronave, fechaSalida, fechaLlegada);
 		}
 		catch (SQLException e) {
 			System.err.println("generalException:"+e.getMessage());
