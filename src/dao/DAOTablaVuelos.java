@@ -364,6 +364,15 @@ public class DAOTablaVuelos {
 		return prepStmt.executeQuery();
 		
 	}
+	public ResultSet queryVuelosViajerosPorViajeroConParametros(int idViajero, String tipoIdViajero, String clase, double millas) throws SQLException, ParseException {
+		String sql= "SELECT ID_VUELO FROM (((SELECT * FROM RESERVA_VIAJEROS WHERE ID_VIAJERO = "+idViajero+" AND "
+				+ "TIPO_ID_VIAJERO = '"+tipoIdViajero+"')T1 JOIN "
+				+"( SELECT * FROM VIAJEROS WHERE VIAJEROS.MILLAS_RECORRIDAS >"+millas+")T3 ON T3.ID=T1.ID_VIAJERO) JOIN"
+				+ "(SELECT * FROM  VUELO_VIAJEROS)T2 ON T1.ID_VUELO = T2.ID) GROUP BY ID_VUELO";
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		return prepStmt.executeQuery();
+		
+	}
 	
 	public ArrayList<ViajeViajeros> getVuelosViajerosPorViajero(ResultSet rs) throws SQLException, ParseException
 	{
@@ -1079,6 +1088,41 @@ public class DAOTablaVuelos {
 			vuelos.add(vuelo);
 		}
 		return vuelos;
+	}
+	public ArrayList<ConsultaViajes> consultarViajesViajeroParametros(int idViajero, String tipoIdViajero, String clase, double millas) throws Exception
+	{
+		DAOTablaAerolina daoAerolineas = new DAOTablaAerolina();
+		daoAerolineas.setConn(conn);
+		DAOTablaReservas daoReservas = new DAOTablaReservas();
+		daoReservas.setConn(conn);
+		ResultSet rs = queryVuelosViajerosPorViajeroConParametros(idViajero, tipoIdViajero, clase, millas);
+		ArrayList<VueloViajeros> vuelos = getVuelosViajerosPorViajero(rs);
+		
+		ArrayList<ConsultaViajes> consultas = new ArrayList<>();
+
+		for(int i = 0; i< vuelos.size(); i++)
+		{
+			VueloViajeros vuelo = vuelos.get(i);
+			String aerolineaa = vuelo.getAerolinea();
+			Aerolinea aerolinea = daoAerolineas.getAerolinea(aerolineaa);
+
+			ArrayList<ReservaViajeros> reservas = daoReservas.getReservasViajerosPorVueloYViajero(idViajero,tipoIdViajero,vuelo.getId());
+
+			
+			String aeroLleg = vuelo.getAeropuertoLL().getCodigo();
+			String aeroSal = vuelo.getAeropuertoSA().getCodigo();
+			int idVuelo = vuelo.getId();
+
+			double costo = generarReporte(vuelo.getId(), daoReservas);
+			SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			String fechaLlegada = format.format(vuelo.getHoraLlegada());
+			String fechaSalida =format.format(vuelo.getHoraSalida());
+			millas = vuelo.getDistancia();
+
+			consultas.add(new ConsultaViajes(reservas, idVuelo, aerolinea, fechaSalida, fechaLlegada, aeroSal, aeroLleg, millas, costo));
+		}
+		return consultas;
+		
 	}
 
 

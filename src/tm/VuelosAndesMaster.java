@@ -1007,6 +1007,64 @@ public class VuelosAndesMaster {
 			}
 		}
 		return vuelos;	}
+	
+	public ArrayList<ConsultaViajes> consultarViajesViajeroParametros(int idViajero, String tipoIdViajero, String clase, double millas)
+	{			
+		DAOTablaVuelos daoVuelos= null;
+		ArrayList<ConsultaViajes> consultas= null;
+
+		
+		try{
+			daoVuelos= new DAOTablaVuelos();
+			this.conn=darConexion();
+			conn.setAutoCommit(false);
+			conn.setReadOnly(true);
+			daoVuelos.setConn(conn);
+			consultas = daoVuelos.consultarViajesViajero(idViajero, tipoIdViajero);
+		}
+		catch (SQLException e) {
+			System.err.println("generalException:"+e.getMessage());
+			e.printStackTrace();
+			
+			try {
+				conn.rollback();
+				throw e;
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		catch (Exception e) {
+			System.err.println("generalException:"+e.getMessage());
+			e.printStackTrace();
+			try {
+				conn.rollback();
+				throw e;
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+		}
+		finally {
+			try{
+				daoVuelos.cerrarVuelos();
+				if(this.conn!=null){
+					this.conn.close();
+				}
+			}catch (SQLException e2) {
+				System.err.println("generalException:"+e2.getMessage());
+				e2.printStackTrace();
+				try {
+					throw e2;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return consultas;
+	}
 
 
 	public ConsultaTraficoAereo consultarTraficoAereoCiudades(String ciudad1, String ciudad2, int dia1, String mes1,
