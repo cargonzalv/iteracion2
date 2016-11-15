@@ -26,7 +26,7 @@ import vos.ReservaViajerosMultiple;
 import vos.ReservaViajeros;
 import vos.Viajeros;
 import vos.Vuelo;
-import vos.VueloViajeros;
+import vos.ViajeViajeros;
 
 public class DAOTablaReservas {
 	private ArrayList<Object> reservas;
@@ -108,7 +108,7 @@ public class DAOTablaReservas {
 			int idViajero=rs.getInt("ID_VIAJERO");
 			String tipoId = rs.getString("TIPO_ID_VIAJERO");
 			int idVuelo = rs.getInt("ID_VUELO");
-			VueloViajeros vuelo = daoVuelos.getVueloViajeros(idVuelo);
+			ViajeViajeros vuelo = daoVuelos.getVueloViajeros(idVuelo);
 			String tipo = rs.getString("TIPO");
 			ReservaViajeros reserva = new ReservaViajeros(id, idReserva ,idVuelo, idViajero,tipoId, tipo, reservaP.getFecha(),Reserva.VIAJEROS, vuelo.getAeropuertoSA().getCodigo(),vuelo.getAeropuertoLL().getCodigo());
 			reservas.add(reserva);
@@ -185,11 +185,11 @@ public class DAOTablaReservas {
 
 
 
-	public ArrayList<VueloViajeros> getVuelosReservaMultiple(int idReservaGeneral) throws Exception
+	public ArrayList<ViajeViajeros> getVuelosReservaMultiple(int idReservaGeneral) throws Exception
 	{
 		DAOTablaVuelos daoVuelos = new DAOTablaVuelos();
 		daoVuelos.setConn(conn);
-		ArrayList<VueloViajeros> vuelos = new ArrayList<VueloViajeros>();
+		ArrayList<ViajeViajeros> vuelos = new ArrayList<ViajeViajeros>();
 		String sql= "SELECT * FROM ISIS2304A131620.RESERVA_VIAJEROS WHERE ID_RESERVA_GENERAL ="+idReservaGeneral+" ORDER BY ORDEN ASC";
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		ResultSet rs=prepStmt.executeQuery();
@@ -256,7 +256,7 @@ public class DAOTablaReservas {
 		String sql2= "Insert into RESERVA(FECHA,TIPO_RESERVA,AERO_SAL,AERO_LLEG) values(TO_DATE('"+ reserva.getFecha()+"','DD/MM/YYYY'),'"+reserva.getTipoReserva()+"','"+reserva.getAeroSal()+"','"+reserva.getAeroLleg()+"')";
 		PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
 		prepStmt2.executeUpdate();
-		VueloViajeros vuelo = daoVuelos.getVueloViajeros(reserva.getIdVuelo());
+		ViajeViajeros vuelo = daoVuelos.getVueloViajeros(reserva.getIdVuelo());
 		boolean esMultiple = daoVuelos.getVueloViajerosAeropuertos(reserva.getAeroSal(), reserva.getAeroLleg())==null;
 		if(!esMultiple & vuelo == null)
 		{
@@ -302,7 +302,7 @@ public class DAOTablaReservas {
 
 	}
 
-	public ArrayList<VueloViajeros> darVuelosReservaMultiple(DAOTablaVuelos daoVuelos, String aeroSal, String aeroLleg) throws Exception
+	public ArrayList<ViajeViajeros> darVuelosReservaMultiple(DAOTablaVuelos daoVuelos, String aeroSal, String aeroLleg) throws Exception
 	{
 
 
@@ -312,7 +312,7 @@ public class DAOTablaReservas {
 		GrafoDirigido grafo = new GrafoDirigido(daoAeropuertos.getAeropuertos(),daoVuelos.getVuelosViajeros());
 		Dijkstra dijkstra = new Dijkstra(grafo, daoVuelos);
 		dijkstra.execute(aeroSAL);
-		ArrayList<VueloViajeros> escalas = dijkstra.getEscalas(aeroSal, aeroLleg);
+		ArrayList<ViajeViajeros> escalas = dijkstra.getEscalas(aeroSal, aeroLleg);
 		if(escalas == null)
 		{
 			throw new Exception("No hay vuelos que conecten estos dos aeropuertos");
@@ -330,12 +330,12 @@ public class DAOTablaReservas {
 		ArrayList<Reserva> reservas = getReservas();
 
 		int idReserva = reservas.get(reservas.size()-1).getId();
-		ArrayList<VueloViajeros> vuelosReservaMultiple = darVuelosReservaMultiple(daoVuelos, reserva.getAeroSal(), reserva.getAeroLleg());
+		ArrayList<ViajeViajeros> vuelosReservaMultiple = darVuelosReservaMultiple(daoVuelos, reserva.getAeroSal(), reserva.getAeroLleg());
 
 		ArrayList<ReservaViajeros> resp = new ArrayList<>();
 		for(int i = 0; i<vuelosReservaMultiple.size();i++)
 		{
-			VueloViajeros vueloActual = vuelosReservaMultiple.get(i);
+			ViajeViajeros vueloActual = vuelosReservaMultiple.get(i);
 			if(verificarReservaVuelo(reserva, vueloActual))
 			{
 				String sql= "Insert into RESERVA_VIAJEROS(ID_RESERVA_GENERAL,ID_VUELO,ID_VIAJERO,TIPO_ID_VIAJERO,TIPO) values("+idReserva+","+vueloActual.getId()+","+reserva.getIdViajero()+",'"+reserva.getTipoIdViajero()+"','"+reserva.getClase()+"')";
@@ -351,7 +351,7 @@ public class DAOTablaReservas {
 
 	}
 
-	public boolean verificarReservaVuelo(ReservaViajeros reserva, VueloViajeros vuelo) throws Exception
+	public boolean verificarReservaVuelo(ReservaViajeros reserva, ViajeViajeros vuelo) throws Exception
 	{
 		DAOTablaAviones daoAviones = new DAOTablaAviones();
 		daoAviones.setConn(conn);

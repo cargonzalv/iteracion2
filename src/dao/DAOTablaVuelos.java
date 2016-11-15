@@ -19,15 +19,19 @@ import vos.Avion;
 import vos.AvionCarga;
 import vos.AvionViajeros;
 import vos.Carga;
+import vos.ConsultaAvionViajeros;
+import vos.ConsultaTraficoAereo;
 import vos.ConsultaViajes;
 import vos.Reserva;
 import vos.ReservaCarga;
 import vos.ReservaViajeros;
 import vos.ReservaViajerosMultiple;
+import vos.Viaje;
+import vos.Viajeros;
 import vos.ReservaViajeros;
 import vos.Vuelo;
-import vos.VueloCarga;
-import vos.VueloViajeros;
+import vos.ViajeCarga;
+import vos.ViajeViajeros;
 
 
 
@@ -126,7 +130,7 @@ public class DAOTablaVuelos {
 			int id= rs.getInt("ID");
 			Date horaSalida= rs.getDate("HORA_SALIDA");
 			Date horaLlegada=rs.getDate("HORA_LLEGADA");
-			String duracion =rs.getString("DURACION");
+			int duracion =rs.getInt("DURACION");
 			double distancia= rs.getDouble("DISTANCIA");
 			int frecuencia =rs.getInt("FRECUENCIA");
 			String tipoViaje= rs.getString("TIPO_VIAJE");
@@ -145,14 +149,14 @@ public class DAOTablaVuelos {
 				realizadoo = true;
 			}
 			String tipoVuelo = rs.getString("TIPO_VUELO");
-			vuelos.add(new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo));
+			vuelos.add(new Vuelo(id, frecuencia, aerolinea, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, tipoVuelo));
 		}
 		return vuelos;
 	}
 
 
-	public ArrayList<VueloViajeros> getVuelosViajeros() throws SQLException, ParseException {
-		ArrayList<VueloViajeros> vueloViajeros = new ArrayList<VueloViajeros>();
+	public ArrayList<ViajeViajeros> getVuelosViajeros() throws SQLException, ParseException {
+		ArrayList<ViajeViajeros> vueloViajeros = new ArrayList<ViajeViajeros>();
 		String sql="SELECT * FROM ISIS2304A131620.VUELO_VIAJEROS";
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		ResultSet rs=prepStmt.executeQuery();
@@ -162,7 +166,7 @@ public class DAOTablaVuelos {
 			double costoEcon = rs.getDouble("COSTO_ECONOMICO");
 			Vuelo vueloT = getVuelo(id);
 
-			vueloViajeros.add(new VueloViajeros(vueloT.getId(), vueloT.getHoraSalida(), vueloT.getHoraLlegada(), vueloT.getFrecuencia(), vueloT.getTipoViaje(),vueloT.getAerolinea(), vueloT.getAvion(), vueloT.getAeropuertoSA(), vueloT.getAeropuertoLL(), vueloT.getDistancia(), vueloT.getDuracion(), vueloT.isRealizado(), costoEjec, costoEcon));					
+			vueloViajeros.add(new ViajeViajeros(vueloT.getId(), vueloT.getHoraSalida(), vueloT.getHoraLlegada(), vueloT.getFrecuencia(), vueloT.getTipoViaje(),vueloT.getAerolinea(), vueloT.getAvion(), vueloT.getAeropuertoSA(), vueloT.getAeropuertoLL(), vueloT.getDistancia(), vueloT.getDuracion(), vueloT.isRealizado(), costoEjec, costoEcon));					
 		}
 		return vueloViajeros;
 	}
@@ -206,15 +210,15 @@ public class DAOTablaVuelos {
 
 
 
-	public VueloViajeros deleteVueloViajeros(int vueloViajeros) throws Exception
+	public ViajeViajeros deleteVueloViajeros(int vueloViajeros) throws Exception
 	{
-		VueloViajeros vuelo = getVueloViajeros(vueloViajeros);
+		ViajeViajeros vuelo = getVueloViajeros(vueloViajeros);
 		DAOTablaReservas daoReservas = new DAOTablaReservas();
 		daoReservas.setConn(conn);
 		DAOTablaAeropuertos daoAeropuertos = new DAOTablaAeropuertos();
 		daoAeropuertos.setConn(conn);
 		ArrayList<ReservaViajeros> reservas =  daoReservas.getReservasViajerosPorVuelo(vuelo.getId());
-		ArrayList<VueloViajeros> vuelos = getVuelosViajeros();
+		ArrayList<ViajeViajeros> vuelos = getVuelosViajeros();
 		ArrayList<ReservaViajeros> reservasACrear = new ArrayList<>();
 		for(int i = 0; i<reservas.size(); i++)
 		{
@@ -228,7 +232,7 @@ public class DAOTablaVuelos {
 				Vuelo ganador = null;
 				for(int j =0; j< vuelos.size(); j++)
 				{
-					VueloViajeros actual = vuelos.get(j);
+					ViajeViajeros actual = vuelos.get(j);
 					if( actual.getAeropuertoSA().getCodigo().equals(vuelo.getAeropuertoSA().getCodigo())&& actual.getAeropuertoLL().getCodigo().equals(vuelo.getAeropuertoLL().getCodigo())&& actual.getHoraSalida().after(vuelo.getHoraSalida())&& actual.getHoraSalida().before(min) )
 					{
 						min = actual.getHoraSalida();
@@ -298,7 +302,7 @@ public class DAOTablaVuelos {
 			SimpleDateFormat format = new SimpleDateFormat("dd MMM yyyy HH:mm:ss");
 			horaLlegada = format.parse(format.format(horaLlegada));
 			horaSalida = format.parse(format.format(horaSalida));
-			String duracion =rs.getString("DURACION");
+			int duracion =rs.getInt("DURACION");
 			double distancia= rs.getDouble("DISTANCIA");
 			int frecuencia =rs.getInt("FRECUENCIA");
 			String tipoViaje= rs.getString("TIPO_VIAJE");
@@ -317,13 +321,14 @@ public class DAOTablaVuelos {
 				realizadoo = true;
 			}
 			String tipoVuelo = rs.getString("TIPO_VUELO");
-			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo, tipoVuelo);					
+			vuelo = new Vuelo(id, frecuencia, aerolinea, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, tipoVuelo);
+		
 		}
 		return vuelo;
 	}
 
-	public VueloCarga getVueloCarga(int idVuelo) throws SQLException, ParseException {
-		VueloCarga vueloCarga=null;
+	public ViajeCarga getVueloCarga(int idVuelo) throws SQLException, ParseException {
+		ViajeCarga vueloCarga=null;
 		String sql="SELECT * FROM ISIS2304A131620.VUELO WHERE ID ="+idVuelo;
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		ResultSet rs=prepStmt.executeQuery();
@@ -333,13 +338,13 @@ public class DAOTablaVuelos {
 
 			double costo = rs.getDouble("COSTO_DENSIDAD");
 
-			vueloCarga = new VueloCarga(idVuelo, vueloT.getHoraSalida(), vueloT.getHoraLlegada(), vueloT.getFrecuencia(), vueloT.getTipoViaje(), vueloT.getAerolinea(), vueloT.getAvion(), vueloT.getAeropuertoSA(), vueloT.getAeropuertoLL(), vueloT.getDistancia(), vueloT.getDuracion(), vueloT.isRealizado(), costo);					
+			vueloCarga = new ViajeCarga(idVuelo, vueloT.getHoraSalida(), vueloT.getHoraLlegada(), vueloT.getFrecuencia(), vueloT.getTipoViaje(), vueloT.getAerolinea(), vueloT.getAvion(), vueloT.getAeropuertoSA(), vueloT.getAeropuertoLL(), vueloT.getDistancia(), vueloT.getDuracion(), vueloT.isRealizado(), costo);					
 		}
 		return vueloCarga;
 	}
 
-	public VueloViajeros getVueloViajerosAeropuertos(String aeroSal, String aeroLleg) throws SQLException, ParseException {
-		VueloViajeros vuelo=null;
+	public ViajeViajeros getVueloViajerosAeropuertos(String aeroSal, String aeroLleg) throws SQLException, ParseException {
+		ViajeViajeros vuelo=null;
 		String sql="SELECT * FROM ISIS2304A131620.VUELO WHERE (AEROPUERTO_SALIDA ='" + aeroSal+ "' AND AEROPUERTO_LLEGADA = '" + aeroLleg+ "')";
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		ResultSet rs=prepStmt.executeQuery();
@@ -360,13 +365,13 @@ public class DAOTablaVuelos {
 		
 	}
 	
-	public ArrayList<VueloViajeros> getVuelosViajerosPorViajero(ResultSet rs) throws SQLException, ParseException
+	public ArrayList<ViajeViajeros> getVuelosViajerosPorViajero(ResultSet rs) throws SQLException, ParseException
 	{
-		ArrayList<VueloViajeros> vuelos= new ArrayList<VueloViajeros>();
+		ArrayList<ViajeViajeros> vuelos= new ArrayList<ViajeViajeros>();
 		while(rs.next())
 		{
 			int id = rs.getInt("ID_VUELO");
-			VueloViajeros vuelo = getVueloViajeros(id);
+			ViajeViajeros vuelo = getVueloViajeros(id);
 	
 
 				vuelos.add(vuelo);
@@ -382,13 +387,13 @@ public class DAOTablaVuelos {
 		DAOTablaReservas daoReservas = new DAOTablaReservas();
 		daoReservas.setConn(conn);
 		ResultSet rs = queryVuelosViajerosPorViajero(idViajero, tipoIdViajero);
-		ArrayList<VueloViajeros> vuelos = getVuelosViajerosPorViajero(rs);
+		ArrayList<ViajeViajeros> vuelos = getVuelosViajerosPorViajero(rs);
 		
 		ArrayList<ConsultaViajes> consultas = new ArrayList<>();
 
 		for(int i = 0; i< vuelos.size(); i++)
 		{
-			VueloViajeros vuelo = vuelos.get(i);
+			ViajeViajeros vuelo = vuelos.get(i);
 			String aerolineaa = vuelo.getAerolinea();
 			Aerolinea aerolinea = daoAerolineas.getAerolinea(aerolineaa);
 
@@ -414,8 +419,8 @@ public class DAOTablaVuelos {
 
 
 
-	public VueloViajeros getVueloViajeros(int idVuelo) throws SQLException, ParseException {
-		VueloViajeros vueloViajeros=null;
+	public ViajeViajeros getVueloViajeros(int idVuelo) throws SQLException, ParseException {
+		ViajeViajeros vueloViajeros=null;
 		String sql="SELECT * FROM ISIS2304A131620.VUELO_VIAJEROS WHERE ID ="+idVuelo;
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		conn.setSavepoint();
@@ -426,16 +431,16 @@ public class DAOTablaVuelos {
 
 			double costoEjec = rs.getDouble("COSTO_EJECUTIVO");
 			double costoEcon = rs.getDouble("COSTO_ECONOMICO");
-			vueloViajeros = new VueloViajeros(idVuelo, vueloT.getHoraSalida(), vueloT.getHoraLlegada(), vueloT.getFrecuencia(), vueloT.getTipoViaje(), vueloT.getAerolinea(), vueloT.getAvion(), vueloT.getAeropuertoSA(), vueloT.getAeropuertoLL(), vueloT.getDistancia(), vueloT.getDuracion(), vueloT.isRealizado(), costoEjec, costoEcon);	
+			vueloViajeros = new ViajeViajeros(idVuelo, vueloT.getHoraSalida(), vueloT.getHoraLlegada(), vueloT.getFrecuencia(), vueloT.getTipoViaje(), vueloT.getAerolinea(), vueloT.getAvion(), vueloT.getAeropuertoSA(), vueloT.getAeropuertoLL(), vueloT.getDistancia(), vueloT.getDuracion(), vueloT.isRealizado(), costoEjec, costoEcon);	
 		}
 		return vueloViajeros;
 	}
 
 
 
-	public ArrayList<VueloViajeros> getVuelosViajerosRealizadosAvion(String numSerieAvion) throws SQLException, ParseException
+	public ArrayList<ViajeViajeros> getVuelosViajerosRealizadosAvion(String numSerieAvion) throws SQLException, ParseException
 	{
-		ArrayList<VueloViajeros> vuelos = new ArrayList<VueloViajeros>();
+		ArrayList<ViajeViajeros> vuelos = new ArrayList<ViajeViajeros>();
 		String sql="SELECT * FROM ISIS2304A131620.VUELO_VIAJEROS WHERE AVION = '"+numSerieAvion+"' AND REALIZADO = 'Y'";
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		ResultSet rs=prepStmt.executeQuery();
@@ -445,7 +450,7 @@ public class DAOTablaVuelos {
 			Vuelo vueloT = getVuelo(idVuelo);
 			double costoEjec = rs.getDouble("COSTO_EJECUTIVO");
 			double costoEcon = rs.getDouble("COSTO_ECONOMICO");
-			VueloViajeros vuelo = new VueloViajeros(idVuelo, vueloT.getHoraSalida(), vueloT.getHoraLlegada(), vueloT.getFrecuencia(), vueloT.getTipoViaje(), vueloT.getAerolinea(), vueloT.getAvion(), vueloT.getAeropuertoSA(), vueloT.getAeropuertoLL(), vueloT.getDistancia(), vueloT.getDuracion(), vueloT.isRealizado(), costoEjec, costoEcon);			
+			ViajeViajeros vuelo = new ViajeViajeros(idVuelo, vueloT.getHoraSalida(), vueloT.getHoraLlegada(), vueloT.getFrecuencia(), vueloT.getTipoViaje(), vueloT.getAerolinea(), vueloT.getAvion(), vueloT.getAeropuertoSA(), vueloT.getAeropuertoLL(), vueloT.getDistancia(), vueloT.getDuracion(), vueloT.isRealizado(), costoEjec, costoEcon);			
 			vuelos.add(vuelo);
 		}
 		return vuelos;
@@ -453,9 +458,9 @@ public class DAOTablaVuelos {
 
 
 
-	public ArrayList<VueloCarga> getVuelosCargaRealizadosAvion(String numSerieAvion) throws SQLException, ParseException
+	public ArrayList<ViajeCarga> getVuelosCargaRealizadosAvion(String numSerieAvion) throws SQLException, ParseException
 	{
-		ArrayList<VueloCarga> vuelos = new ArrayList<VueloCarga>();
+		ArrayList<ViajeCarga> vuelos = new ArrayList<ViajeCarga>();
 		String sql="SELECT * FROM ISIS2304A131620.VUELO_CARGA WHERE AVION = '"+numSerieAvion+"' AND REALIZADO = 'Y'";
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		ResultSet rs=prepStmt.executeQuery();
@@ -464,7 +469,7 @@ public class DAOTablaVuelos {
 			int idVuelo = rs.getInt("ID");
 			Vuelo vueloT = getVuelo(idVuelo);
 			double costo = rs.getDouble("COSTO_DENSIDAD");
-			VueloCarga vuelo = new VueloCarga(idVuelo, vueloT.getHoraSalida(), vueloT.getHoraLlegada(), vueloT.getFrecuencia(), vueloT.getTipoViaje(), vueloT.getAerolinea(), vueloT.getAvion(), vueloT.getAeropuertoSA(), vueloT.getAeropuertoLL(), vueloT.getDistancia(), vueloT.getDuracion(), vueloT.isRealizado(), costo);			
+			ViajeCarga vuelo = new ViajeCarga(idVuelo, vueloT.getHoraSalida(), vueloT.getHoraLlegada(), vueloT.getFrecuencia(), vueloT.getTipoViaje(), vueloT.getAerolinea(), vueloT.getAvion(), vueloT.getAeropuertoSA(), vueloT.getAeropuertoLL(), vueloT.getDistancia(), vueloT.getDuracion(), vueloT.isRealizado(), costo);			
 			vuelos.add(vuelo);
 		}
 		return vuelos;
@@ -480,7 +485,7 @@ public class DAOTablaVuelos {
 			int id= rs.getInt("ID");
 			Date horaSalida= rs.getDate("HORA_SALIDA");
 			Date horaLlegada=rs.getDate("HORA_LLEGADA");
-			String duracion =rs.getString("DURACION");
+			int duracion =rs.getInt("DURACION");
 			double distancia= rs.getDouble("DISTANCIA");
 			int frecuencia =rs.getInt("FRECUENCIA");
 			String tipoViaje= rs.getString("TIPO_VIAJE");
@@ -500,7 +505,7 @@ public class DAOTablaVuelos {
 			}
 			String tipoVuelo = rs.getString("TIPO_VUELO");
 
-			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);					
+			vuelo = new Vuelo(id, frecuencia, aerolinea, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, tipoVuelo);					
 			vuelos.add(vuelo);
 		}
 		return vuelos;
@@ -515,7 +520,7 @@ public class DAOTablaVuelos {
 			int id= rs.getInt("ID");
 			Date horaSalida= rs.getDate("HORA_SALIDA");
 			Date horaLlegada=rs.getDate("HORA_LLEGADA");
-			String duracion =rs.getString("DURACION");
+			int duracion =rs.getInt("DURACION");
 			double distancia= rs.getDouble("DISTANCIA");
 			int frecuencia =rs.getInt("FRECUENCIA");
 			String tipoViaje= rs.getString("TIPO_VIAJE");
@@ -535,7 +540,7 @@ public class DAOTablaVuelos {
 			}
 			String tipoVuelo = rs.getString("TIPO_VUELO");
 
-			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);		
+			vuelo = new Vuelo(id, frecuencia, aerolinea, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, tipoVuelo);		
 			vuelos.add(vuelo);
 		}
 		return vuelos;
@@ -551,7 +556,7 @@ public class DAOTablaVuelos {
 			int id= rs.getInt("ID");
 			Date horaSalida= rs.getDate("HORA_SALIDA");
 			Date horaLlegada=rs.getDate("HORA_LLEGADA");
-			String duracion =rs.getString("DURACION");
+			int duracion =rs.getInt("DURACION");
 			double distancia= rs.getDouble("DISTANCIA");
 			int frecuencia =rs.getInt("FRECUENCIA");
 			String tipoViaje= rs.getString("TIPO_VIAJE");
@@ -571,7 +576,7 @@ public class DAOTablaVuelos {
 			}
 			String tipoVuelo = rs.getString("TIPO_VUELO");
 
-			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);		
+			vuelo = new Vuelo(id, frecuencia, aerolinea, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, tipoVuelo);		
 			vuelos.add(vuelo);
 		}
 		return vuelos;
@@ -586,7 +591,7 @@ public class DAOTablaVuelos {
 			int id= rs.getInt("ID");
 			horaSalida= rs.getDate("HORA_SALIDA");
 			Date horaLlegada=rs.getDate("HORA_LLEGADA");
-			String duracion =rs.getString("DURACION");
+			int duracion =rs.getInt("DURACION");
 			double distancia= rs.getDouble("DISTANCIA");
 			int frecuencia =rs.getInt("FRECUENCIA");
 			String tipoViaje= rs.getString("TIPO_VIAJE");
@@ -606,7 +611,7 @@ public class DAOTablaVuelos {
 			}
 			String tipoVuelo = rs.getString("TIPO_VUELO");
 
-			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);		
+			vuelo = new Vuelo(id, frecuencia, aerolinea, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, tipoVuelo);		
 			vuelos.add(vuelo);
 		}
 		return vuelos;
@@ -622,7 +627,7 @@ public class DAOTablaVuelos {
 			int id= rs.getInt("ID");
 			Date horaSalida= rs.getDate("HORA_SALIDA");
 			horaLlegada=rs.getDate("HORA_LLEGADA");
-			String duracion =rs.getString("DURACION");
+			int duracion =rs.getInt("DURACION");
 			double distancia= rs.getDouble("DISTANCIA");
 			int frecuencia =rs.getInt("FRECUENCIA");
 			String tipoViaje= rs.getString("TIPO_VIAJE");
@@ -642,7 +647,7 @@ public class DAOTablaVuelos {
 			}
 			String tipoVuelo = rs.getString("TIPO_VUELO");
 
-			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);		
+			vuelo = new Vuelo(id, frecuencia, aerolinea, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, tipoVuelo);		
 			vuelos.add(vuelo);
 		}
 		return vuelos;
@@ -660,7 +665,7 @@ public class DAOTablaVuelos {
 			int id= rs.getInt("ID");
 			Date horaSalida= rs.getDate("HORA_SALIDA");
 			Date horaLlegada=rs.getDate("HORA_LLEGADA");
-			String duracion =rs.getString("DURACION");
+			int duracion =rs.getInt("DURACION");
 			double distancia= rs.getDouble("DISTANCIA");
 			int frecuencia =rs.getInt("FRECUENCIA");
 			String tipoViaje= rs.getString("TIPO_VIAJE");
@@ -680,15 +685,15 @@ public class DAOTablaVuelos {
 			}
 			String tipoVuelo = rs.getString("TIPO_VUELO");
 
-			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion,aeropuertoSalida , aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);
+			vuelo = new Vuelo(id, frecuencia, aerolinea, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, tipoVuelo);
 			vuelos.add(vuelo);
 		}
 		return vuelos;
 	}
 
-	public ArrayList<VueloCarga> getVuelosAeropuertoCarga(String aeropuerto) throws SQLException {
-		VueloCarga vuelo=null;
-		ArrayList<VueloCarga> vuelos = new ArrayList<VueloCarga>();
+	public ArrayList<ViajeCarga> getVuelosAeropuertoCarga(String aeropuerto) throws SQLException {
+		ViajeCarga vuelo=null;
+		ArrayList<ViajeCarga> vuelos = new ArrayList<ViajeCarga>();
 		String sql="SELECT * FROM(SELECT * FROM ISIS2304A131620.VUELO WHERE(ISIS2304A131620.VUELO.AEROPUERTO_SALIDA = "+aeropuerto+" OR ISIS2304A131620.VUELO.AEROPUERTO_LLEGADA = "+aeropuerto+"))c1 INNER JOIN ISIS2304A131620.AVION_VIAJEROS ON (c1.AVION = ISIS2304A131620.AVION_CARGA.NUM_SERIE);";
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		ResultSet rs=prepStmt.executeQuery();
@@ -794,7 +799,7 @@ public class DAOTablaVuelos {
 		double costo = 0;
 		if(vuelo.getTipoVuelo().equals(Vuelo.CARGA))
 		{
-			VueloCarga vueloC = getVueloCarga(idVuelo);
+			ViajeCarga vueloC = getVueloCarga(idVuelo);
 			double densidadTotal = 0;
 			ArrayList<ReservaCarga> reservasC = daoReservas.getReservasCargaPorVuelo(idVuelo);
 			for(int i = 0; i < reservasC.size();i++)
@@ -809,7 +814,7 @@ public class DAOTablaVuelos {
 		}
 		else if(vuelo.getTipoVuelo().equals(Vuelo.VIAJEROS))
 		{
-			VueloViajeros vueloV = getVueloViajeros(idVuelo);
+			ViajeViajeros vueloV = getVueloViajeros(idVuelo);
 			int pasajerosEconomicos = 0;
 			int pasajerosEjecutivos = 0;
 			ArrayList<ReservaViajeros> reservasV = daoReservas.getReservasViajerosPorVuelo(idVuelo);
@@ -846,18 +851,16 @@ public class DAOTablaVuelos {
 
 	}
 	
-	public ArrayList<Vuelo> getVuelosAeropuertoAerolineaOrganizado(String aeropuerto, String aerolinea, String organizacion) throws SQLException {
+	public ArrayList<Vuelo> getViajesAeropuertoAerolineaOrganizado(String aeropuerto, String aerolinea, String organizacion) throws SQLException {
 		Vuelo vuelo=null;
 		ArrayList<Vuelo> vuelos = new ArrayList<Vuelo>();
-		String sql="SELECT * FROM ISIS2304A131620.VUELO WHERE ((ISIS2304A131620.VUELO.AEROPUERTO_SALIDA =" + aeropuerto+ "OR ISIS2304A131620.VUELO.AEROPUERTO_LLEGADA = "+aeropuerto+")AND ISIS2304A131620.VUELO.AEROLINEA = "+aerolinea+") ORDER BY "+organizacion+";";
+		String sql="SELECT * FROM VIAJE JOIN (SELECT * FROM VUELO WHERE ((VUELO.AEROPUERTO_SALIDA =" + aeropuerto+ "OR ISIS2304A131620.VUELO.AEROPUERTO_LLEGADA = "+aeropuerto+")AND VUELO.AEROLINEA = "+aerolinea+") ORDER BY "+organizacion+")t1 ON VIAJE.ID_VUELO = t1.ID";
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		ResultSet rs=prepStmt.executeQuery();
 		while(rs.next()){
 			int id= rs.getInt("ID");
 			Date horaSalida= rs.getDate("HORA_SALIDA");
 			Date horaLlegada=rs.getDate("HORA_LLEGADA");
-			String duracion =rs.getString("DURACION");
-			double distancia= rs.getDouble("DISTANCIA");
 			int frecuencia =rs.getInt("FRECUENCIA");
 			String tipoViaje= rs.getString("TIPO_VIAJE");
 			aerolinea = rs.getString("AEROLINEA");
@@ -876,32 +879,54 @@ public class DAOTablaVuelos {
 			}
 			String tipoVuelo = rs.getString("TIPO_VUELO");
 
-			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);		
+			vuelo = new Viaje(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);		
 			vuelos.add(vuelo);
 		}
 		return vuelos;
 	}
 	
-	public ArrayList<Vuelo> getVuelosAeropuertoAeronaveOrganizado(String aeropuerto, String aeronave, String organizacion) throws SQLException {
-		Vuelo vuelo=null;
-		ArrayList<Vuelo> vuelos = new ArrayList<Vuelo>();
+	public Vuelo darVueloDeViaje(int idViaje) throws SQLException
+	{
+		String sql = "SELECT * FROM VUELO WHERE ID = (SELECT ID_VUELO FROM VIAJE WHERE ID = "+idViaje+")";
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		ResultSet rs=prepStmt.executeQuery();
+		if(rs.next()){
+			int id= rs.getInt("ID");
+			int frecuencia =rs.getInt("FRECUENCIA");
+			String aerolinea = rs.getString("AEROLINEA");
+			String aeropuertoLL= rs.getString("AEROPUERTO_SALIDA");
+			String aeropuertoSA= rs.getString("AEROPUERTO_LLEGADA");
+			Aeropuerto aeropuertoLLegada = getAeropuerto(aeropuertoLL);
+			Aeropuerto aeropuertoSalida= getAeropuerto(aeropuertoSA);
+			String tipoVuelo = rs.getString("TIPO_VUELO");
+			int distancia = rs.getInt("DISTANCIA");
+			int duracion = rs.getInt("DURACION");
+			return new Vuelo(id,frecuencia,aerolinea,aeropuertoSalida,aeropuertoLLegada,distancia,duracion,tipoVuelo);
+
+		}
+		return null;
+	}
+	
+	public ArrayList<Viaje> getViajesAeropuertoAeronaveOrganizado(String aeropuerto, String aeronave, String organizacion) throws SQLException {
+		Viaje viaje=null;
+		ArrayList<Viaje> viajes = new ArrayList<Viaje>();
 		String sql="SELECT * FROM ISIS2304A131620.VUELO JOIN ISIS2304A131620.VIAJE ON ISIS2304A131620.VUELO.ID= ISIS2304A131620.VIAJE.ID_VUELO WHERE ((ISIS2304A131620.VUELO.AEROPUERTO_SALIDA =" + aeropuerto+ "OR ISIS2304A131620.VUELO.AEROPUERTO_LLEGADA = "+aeropuerto+")AND ISIS2304A131620.VIAJE.AVION = "+aeronave+") ORDER BY"+organizacion+";";
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		ResultSet rs=prepStmt.executeQuery();
 		while(rs.next()){
 			int id= rs.getInt("ID");
+			Vuelo vuelo = darVueloDeViaje(id);
+			int idVuelo = vuelo.getId();
 			Date horaSalida= rs.getDate("HORA_SALIDA");
 			Date horaLlegada=rs.getDate("HORA_LLEGADA");
-			String duracion =rs.getString("DURACION");
-			double distancia= rs.getDouble("DISTANCIA");
-			int frecuencia =rs.getInt("FRECUENCIA");
+			int duracion =vuelo.getDuracion();
+			double distancia= vuelo.getDistancia();
+			int frecuencia =vuelo.getFrecuencia();
 			String tipoViaje= rs.getString("TIPO_VIAJE");
-			String aerolinea = rs.getString("AEROLINEA");
+			String aerolinea = vuelo.getAerolinea();
 			String avion = rs.getString("AVION");
-			String aeropuertoLL= rs.getString("AEROPUERTO_SALIDA");
-			String aeropuertoSA= rs.getString("AEROPUERTO_LLEGADA");
-			Aeropuerto aeropuertoLLegada = getAeropuerto(aeropuertoLL);
-			Aeropuerto aeropuertoSalida= getAeropuerto(aeropuertoSA);
+			Aeropuerto aeropuertoLL= vuelo.getAeropuertoLL();
+			Aeropuerto aeropuertoSA= vuelo.getAeropuertoSA();
 			String realizado = rs.getString("REALIZADO");
 			boolean realizadoo = false;
 			if (realizado.equals("N"))
@@ -910,12 +935,12 @@ public class DAOTablaVuelos {
 			{
 				realizadoo = true;
 			}
-			String tipoVuelo = rs.getString("TIPO_VUELO");
+			String tipoVuelo = vuelo.getTipoVuelo();
 
-			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);		
-			vuelos.add(vuelo);
+			viaje = new Viaje(id,idVuelo,horaSalida,horaLlegada,frecuencia,tipoViaje,aerolinea,avion,aeropuertoSA,aeropuertoLL,distancia,duracion,realizadoo,tipoVuelo);
+			viajes.add(viaje);
 		}
-		return vuelos;
+		return viajes;
 	}
 	public ArrayList<Vuelo> getVuelosAeropuertoRangoFechasOrganizado(String aeropuerto, Date fechaMin, Date fechaMax, String organizacion) throws SQLException {
 		Vuelo vuelo=null;
@@ -990,6 +1015,33 @@ public class DAOTablaVuelos {
 		return vuelos;
 	}
 
+	public int cantidadViajerosViaje(int idViaje) throws SQLException
+	{
+		int i = 0;
+		String sql = "SELECT * FROM M_VIAJES_M_VIAJEROS WHERE ID_VIAJE = "+idViaje;
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		ResultSet rs=prepStmt.executeQuery();
+		while(rs.next()){
+			i ++;
+		}
+		return i;
+	}
+	public double cantidadCargaViaje(int idViaje) throws SQLException
+	{
+		DAOTablaCargas daoCargas = new DAOTablaCargas();
+		daoCargas.setConn(conn);
+		String sql = "SELECT * FROM M_VIAJES_M_CARGAS WHERE ID_VIAJE = "+idViaje;
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		ResultSet rs=prepStmt.executeQuery();
+		double peso = 0;
+		while(rs.next()){
+			
+			int idCarga = rs.getInt("ID_CARGA");
+			Carga carga = daoCargas.getCarga(idCarga);
+			peso += carga.getPeso();
+		}
+		return peso;
+	}
 
 	public ArrayList<Vuelo> getVuelosAeropuertoNoParametro(String idAeropuerto, Date fecha1, Date fecha2,
 			String aerolinea, String aeronave, Date fechaSalida, Date fechaLlegada) throws Exception{
@@ -1027,6 +1079,47 @@ public class DAOTablaVuelos {
 			vuelos.add(vuelo);
 		}
 		return vuelos;
+	}
+
+
+	public ConsultaTraficoAereo getTraficoAereoCiudades(String ciudad1, String ciudad2, int dia1, String mes1, int anio1,
+			int dia2, String mes2, int anio2) {
+		String sql = "SELECT * FROM (select * FROM VIAJE WHERE TO_DATE(HORA_SALIDA) >= TO_DATE('"+dia1+"-"+mes1+"-"+anio1+"') AND TO_DATE(HORA_LLEGADA) <= TO_DATE('"+dia2+"-"+mes2+"-"+anio2+"'))t6 "
+				+ "JOIN (SELECT * FROM (SELECT * FROM VUELO JOIN (SELECT COD_IATA FROM AEROPUERTO WHERE NOMBRE_CIUDAD = 'Caracas')t2 "
+				+ "ON VUELO.AEROPUERTO_SALIDA = t2.COD_IATA)t4 JOIN (SELECT COD_IATA FROM AEROPUERTO WHERE NOMBRE_CIUDAD = 'New York')t3 ON "
+				+ "t3.COD_IATA = t4.AEROPUERTO_LLEGADA)t5 ON t5.ID = t6.ID_VUELO";
+		PreparedStatement prp =conn.prepareStatement(sql);
+		ResultSet rs = prp.executeQuery();
+		while(rs.next()){
+			int idViaje= rs.getInt("ID");
+			Date horaSalida= rs.getDate("HORA_SALIDA");
+			Date horaLlegada=rs.getDate("HORA_LLEGADA");
+			String duracion =rs.getString("DURACION");
+			double distancia= rs.getDouble("DISTANCIA");
+			int frecuencia =rs.getInt("FRECUENCIA");
+			String tipoViaje= rs.getString("TIPO_VIAJE");
+			String aerolinea = rs.getString("AEROLINEA");
+			String avion = rs.getString("AVION");
+			String aeropuertoLL= rs.getString("AEROPUERTO_SALIDA");
+			String aeropuertoSA= rs.getString("AEROPUERTO_LLEGADA");
+			Aeropuerto aeropuertoLLegada = getAeropuerto(aeropuertoLL);
+			Aeropuerto aeropuertoSalida= getAeropuerto(aeropuertoSA);
+			String realizado = rs.getString("REALIZADO");
+			boolean realizadoo = false;
+			if (realizado.equals("N"))
+			{}
+			else if(realizado.equals("S"))
+			{
+				realizadoo = true;
+			}
+			String tipoVuelo = rs.getString("TIPO_VUELO");
+
+			vuelo = new Vuelo(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSalida, aeropuertoLLegada, distancia, duracion, realizadoo,tipoVuelo);		
+			vuelos.add(vuelo);
+		}
+		return vuelos;
+		
+      
 	}
 
 

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class ConsultaAvionCarga extends ConsultaAvion {
 
-	private ArrayList<VueloCarga> vuelos;
-	public ArrayList<VueloCarga> getVuelos() {
+	private ArrayList<ViajeCarga> vuelos;
+	public ArrayList<ViajeCarga> getVuelos() {
 		return vuelos;
 	}
 
-	public void setVuelos(ArrayList<VueloCarga> vuelos) {
+	public void setVuelos(ArrayList<ViajeCarga> vuelos) {
 		this.vuelos = vuelos;
 	}
 	private double cargaMax;
@@ -22,7 +22,7 @@ public class ConsultaAvionCarga extends ConsultaAvion {
 	 * @param cargaMax
 	 */
 	public ConsultaAvionCarga(String numSerie, String modelo, String marca, int anioFabrica, String tipo,
-			ArrayList<VueloCarga> vuelos, double  millas, double cargaMax) {
+			ArrayList<ViajeCarga> vuelos, double  millas, double cargaMax) {
 		super(numSerie, modelo, marca, anioFabrica, tipo, millas);
 		
 		this.cargaMax = cargaMax;

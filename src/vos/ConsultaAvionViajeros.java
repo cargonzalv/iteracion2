@@ -6,7 +6,7 @@ public class ConsultaAvionViajeros extends ConsultaAvion {
 
 	private int sillasEjecutivas;
 	private int sillasEconomicas;
-	private ArrayList<VueloViajeros> vuelos;
+	private ArrayList<ViajeViajeros> vuelos;
 	private double millas;
 	
 	
@@ -22,7 +22,7 @@ public class ConsultaAvionViajeros extends ConsultaAvion {
 	 * @param millas
 	 */
 	public ConsultaAvionViajeros(String numSerie, String modelo, String marca, int anioFabrica, String tipo
-			,ArrayList<VueloViajeros> vuelos, double millas,int sillasEjecutivas, int sillasEconomicas) {
+			,ArrayList<ViajeViajeros> vuelos, double millas,int sillasEjecutivas, int sillasEconomicas) {
 		super(numSerie, modelo, marca, anioFabrica, tipo, millas);
 		
 		this.sillasEjecutivas = sillasEjecutivas;
@@ -42,10 +42,10 @@ public class ConsultaAvionViajeros extends ConsultaAvion {
 	public void setSillasEconomicas(int sillasEconomicas) {
 		this.sillasEconomicas = sillasEconomicas;
 	}
-	public ArrayList<VueloViajeros> getVuelos() {
+	public ArrayList<ViajeViajeros> getVuelos() {
 		return vuelos;
 	}
-	public void setVuelos(ArrayList<VueloViajeros> vuelos) {
+	public void setVuelos(ArrayList<ViajeViajeros> vuelos) {
 		this.vuelos = vuelos;
 	}
 	public double getMillas() {

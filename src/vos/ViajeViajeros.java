@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
-public class VueloViajeros extends Vuelo {
-	public final static String TIPO="Viaje";
+public class ViajeViajeros extends Viaje {
+	public final static String TIPO="Viajero";
 	private double costoEjec;
 	private double costoEcon;
 	private int cantidadViajeros;
 	private ArrayList<Viajeros> viajeros;
-	public VueloViajeros(int id, Date horaSalida, Date horaLlegada, int frecuencia, String tipoViaje, String aerolinea,
-			String avion, Aeropuerto aeropuertoSA, Aeropuerto aeropuertoLL, double distancia, String duracion, boolean realizado, double costoEjec, double costoEcon) {
-		super(id, horaSalida, horaLlegada, frecuencia, tipoViaje, aerolinea, avion, aeropuertoSA, aeropuertoLL, distancia,
-				duracion, realizado,TIPO);
+	public ViajeViajeros(int id,int idVuelo, Date horaSalida, Date horaLlegada, int frecuencia, String tipoVuelo, String aerolinea,
+			String avion, Aeropuerto aeropuertoSA, Aeropuerto aeropuertoLL, double distancia, int duracion, boolean realizado, double costoEjec, double costoEcon) {
+		super(id,idVuelo, horaSalida, horaLlegada, frecuencia, TIPO, aerolinea, avion, aeropuertoSA, aeropuertoLL, distancia,
+				duracion, realizado,tipoVuelo);
 		this.costoEjec = costoEjec;
 		this.setCostoEcon(costoEcon);
 		// TODO Auto-generated constructor stub

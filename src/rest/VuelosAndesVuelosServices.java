@@ -32,7 +32,7 @@ import vos.ConsultaTraficoAereo;
 import vos.ConsultaViajes;
 import vos.ListaVuelos;
 import vos.Vuelo;
-import vos.VueloViajeros;
+import vos.ViajeViajeros;
 
 /**
  * Clase que expone servicios REST con ruta base: http://"ip o nombre de host":8080/VuelAndes/rest/videos/...
@@ -192,7 +192,7 @@ public class VuelosAndesVuelosServices {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response cancelarVuelo(@javax.ws.rs.PathParam("idVuelo") int idVuelo) {
 		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
-		VueloViajeros viaje = null;
+		ViajeViajeros viaje = null;
 		try {
 			viaje = tm.deleteViaje(idVuelo);
 		} catch (Exception e) {
@@ -204,8 +204,8 @@ public class VuelosAndesVuelosServices {
 	@GET 
 	@Path("consultaTrafico/{ciudad1}/{ciudad2/desde/{dia1}/{mes1}/{anio1}/hasta/{dia2}/{mes2}/{anio2}")
 	public Response consultaTraficoEntreCiudades(@javax.ws.rs.PathParam("ciudad1") String ciudad1, @javax.ws.rs.PathParam("ciudad2") String ciudad2,
-			@javax.ws.rs.PathParam("dia1") int dia1,@javax.ws.rs.PathParam("mes1") int mes1,@javax.ws.rs.PathParam("anio1")int anio1,
-			@javax.ws.rs.PathParam("dia2")int dia2,@javax.ws.rs.PathParam("mes2")int mes2,@javax.ws.rs.PathParam("anio2")int anio2)
+			@javax.ws.rs.PathParam("dia1") int dia1,@javax.ws.rs.PathParam("mes1") String mes1,@javax.ws.rs.PathParam("anio1")int anio1,
+			@javax.ws.rs.PathParam("dia2")int dia2,@javax.ws.rs.PathParam("mes2")String mes2,@javax.ws.rs.PathParam("anio2")int anio2)
 	{
 		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
 		ConsultaTraficoAereo consulta = null;

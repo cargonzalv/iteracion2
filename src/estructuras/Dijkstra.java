@@ -14,11 +14,11 @@ import java.util.Set;
 import dao.DAOTablaVuelos;
 import vos.Aeropuerto;
 import vos.Vuelo;
-import vos.VueloViajeros;
+import vos.ViajeViajeros;
 
 public class Dijkstra {
 
-	private final List<VueloViajeros> Vuelos;
+	private final List<ViajeViajeros> Vuelos;
 	private Set<Aeropuerto> settledNodes;
 	private Set<Aeropuerto> unSettledNodes;
 	private Map<String, String> predecessors;
@@ -27,7 +27,7 @@ public class Dijkstra {
 
 	public Dijkstra(GrafoDirigido graph, DAOTablaVuelos daoVuelos) {
 		// create a copy of the array so that we can operate on this array
-		this.Vuelos = new ArrayList<VueloViajeros>(graph.getEdges());
+		this.Vuelos = new ArrayList<ViajeViajeros>(graph.getEdges());
 		this.daoVuelos = daoVuelos;
 
 	}
@@ -131,8 +131,8 @@ public class Dijkstra {
 		Collections.reverse(path);
 		return path;
 	}
-	public ArrayList<VueloViajeros> getEscalas(String source, String target) throws SQLException, ParseException {
-		ArrayList<VueloViajeros> path = new ArrayList<VueloViajeros>();
+	public ArrayList<ViajeViajeros> getEscalas(String source, String target) throws SQLException, ParseException {
+		ArrayList<ViajeViajeros> path = new ArrayList<ViajeViajeros>();
 		String step = target;
 		// check if a path exists
 		if (predecessors.get(step) == null) {

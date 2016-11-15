@@ -16,8 +16,8 @@ import vos.ConsultaAvionCarga;
 import vos.ConsultaAvionViajeros;
 import vos.Usuarios;
 import vos.Vuelo;
-import vos.VueloCarga;
-import vos.VueloViajeros;
+import vos.ViajeCarga;
+import vos.ViajeViajeros;
 
 public class DAOTablaAviones {
 	ArrayList<Avion> aviones;
@@ -102,7 +102,7 @@ public class DAOTablaAviones {
 	public ConsultaAvionViajeros consultarAvionViajeros(AvionViajeros avion) throws Exception
 	{
 		DAOTablaVuelos daoVuelos = new DAOTablaVuelos();
-		ArrayList<VueloViajeros> vuelos = daoVuelos.getVuelosViajerosRealizadosAvion(avion.getNumSerie());
+		ArrayList<ViajeViajeros> vuelos = daoVuelos.getVuelosViajerosRealizadosAvion(avion.getNumSerie());
 		double distancia = 0;
 		for(int i = 0; i < vuelos.size(); i++)
 		{
@@ -114,7 +114,7 @@ public class DAOTablaAviones {
 	public ConsultaAvionCarga consultarAvionCarga(AvionCarga avion) throws SQLException, ParseException
 	{
 		DAOTablaVuelos daoVuelos = new DAOTablaVuelos();
-		ArrayList<VueloCarga> vuelos = daoVuelos.getVuelosCargaRealizadosAvion(avion.getNumSerie());
+		ArrayList<ViajeCarga> vuelos = daoVuelos.getVuelosCargaRealizadosAvion(avion.getNumSerie());
 		double distancia = 0;
 		for(int i = 0; i < vuelos.size(); i++)
 		{

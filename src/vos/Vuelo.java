@@ -14,18 +14,13 @@ public class Vuelo {
 	@JsonProperty(value="id")
 	private int id;
 
-	private Date horaSalida;
 	
-	private Date horaLlegada;
 	
 	private int frecuencia;
 	
 	private String aerolinea;
-	private String avion;
 	
-	private boolean realizado;
 	
-	private String tipoViaje;
 	
 	private String tipoVuelo;
 
@@ -40,37 +35,25 @@ public class Vuelo {
 	private double distancia;
 	
 	@JsonProperty(value="Duracion")
-	private String duracion;
+	private int duracion;
 	
 	public final static String VIAJEROS = "Viajeros";
 	public final static String CARGA = "Carga";
 
-	public Vuelo(int id, Date horaSalida, Date horaLlegada, int frecuencia,String tipoViaje, String aerolinea,
-			String avion, Aeropuerto aeropuertoSA, Aeropuerto aeropuertoLL, double distancia, String duracion, boolean realizado, String tipoVuelo) {
+	public Vuelo(int id, int frecuencia, String aerolinea,
+			 Aeropuerto aeropuertoSA, Aeropuerto aeropuertoLL, double distancia, int duracion, String tipoVuelo) {
 		super();
 		this.id = id;
-		this.horaSalida = horaSalida;
-		this.horaLlegada = horaLlegada;
 		this.frecuencia = frecuencia;
 		this.aerolinea = aerolinea;
-		this.avion = avion;
 		this.aeropuertoLL = aeropuertoLL;
 		this.aeropuertoSA = aeropuertoSA;
 		this.distancia = distancia;
 		this.duracion = duracion;
-		this.realizado = realizado;
-		this.tipoViaje = tipoViaje;
 		this.tipoVuelo = tipoVuelo;
 	}
 
-	public boolean isRealizado() {
-		return realizado;
-	}
-
-	public void setRealizado(boolean realizado) {
-		this.realizado = realizado;
-	}
-
+	
 	public int getId() {
 		return id;
 	}
@@ -79,21 +62,7 @@ public class Vuelo {
 		this.id = id;
 	}
 
-	public Date getHoraSalida() {
-		return horaSalida;
-	}
-
-	public void setHoraSalida(Date horaSalida) {
-		this.horaSalida = horaSalida;
-	}
-
-	public Date getHoraLlegada() {
-		return horaLlegada;
-	}
-
-	public void setHoraLlegada(Date horaLlegada) {
-		this.horaLlegada = horaLlegada;
-	}
+	
 
 	public int getFrecuencia() {
 		return frecuencia;
@@ -113,13 +82,6 @@ public class Vuelo {
 		this.aerolinea = aerolinea;
 	}
 
-	public String getAvion() {
-		return avion;
-	}
-
-	public void setAvion(String avion) {
-		this.avion = avion;
-	}
 
 	public Aeropuerto getAeropuertoLL() {
 		return aeropuertoLL;
@@ -145,21 +107,15 @@ public class Vuelo {
 		this.distancia = distancia;
 	}
 
-	public String getDuracion() {
+	public int getDuracion() {
 		return duracion;
 	}
 
-	public void setDuracion(String duracion) {
+	public void setDuracion(int duracion) {
 		this.duracion = duracion;
 	}
 
-	public String getTipoViaje() {
-		return tipoViaje;
-	}
 
-	public void setTipoViaje(String tipoVuelo) {
-		this.tipoViaje = tipoVuelo;
-	}
 
 	public String getTipoVuelo() {
 		return tipoVuelo;
