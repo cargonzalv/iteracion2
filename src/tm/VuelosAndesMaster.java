@@ -18,6 +18,8 @@ import vos.Avion;
 import vos.AvionCarga;
 import vos.AvionViajeros;
 import vos.ConsultaAvion;
+import vos.ConsultaAvionViajeros;
+import vos.ConsultaTraficoAereo;
 import vos.ConsultaViajes;
 import vos.CreacionReservaGrupalYCarga;
 import vos.ListaVuelos;
@@ -909,6 +911,47 @@ public class VuelosAndesMaster {
 			}
 		}
 		return vuelos;	}
+
+
+	public ConsultaTraficoAereo consultarTraficoAereoCiudades(String ciudad1, String ciudad2, int dia1, int mes1,
+			int anio1, int dia2, int mes2, int anio2) {
+		DAOTablaVuelos daoVuelos= new DAOTablaVuelos();
+		ConsultaAvionViajeros consulta = null;
+		try{
+			this.conn=darConexion();
+			conn.setAutoCommit(false);
+			conn.setReadOnly(true);
+			daoVuelos.setConn(conn);
+			consulta=daoVuelos.getTraficoAereoCiudades(ciudad1,ciudad2,dia1,mes1,anio1,dia2,mes2,anio2);
+		}
+		catch (SQLException e) {
+			conn.rollback();
+			System.err.println("generalException:"+e.getMessage());
+			e.printStackTrace();
+			throw e;
+		}
+		catch (Exception e) {
+			conn.rollback();
+			System.err.println("generalException:"+e.getMessage());
+			e.printStackTrace();
+			throw e;
+
+		}
+		finally {
+			try{
+				daoVuelos.cerrarVuelos();
+				if(this.conn!=null){
+					this.conn.close();
+				}
+			}catch (SQLException e2) {
+				System.err.println("generalException:"+e2.getMessage());
+				e2.printStackTrace();
+				throw e2;
+			}
+		}
+		return consulta;	}
+
+	}
 
 
 

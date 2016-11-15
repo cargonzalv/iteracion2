@@ -28,6 +28,7 @@ import javax.ws.rs.core.Response;
 
 
 import tm.VuelosAndesMaster;
+import vos.ConsultaTraficoAereo;
 import vos.ConsultaViajes;
 import vos.ListaVuelos;
 import vos.Vuelo;
@@ -198,6 +199,22 @@ public class VuelosAndesVuelosServices {
 			return Response.status(500).entity(doErrorMessage(e)).build();
 		}
 		return Response.status(200).entity(viaje).build();
+	}
+	
+	@GET 
+	@Path("consultaTrafico/{ciudad1}/{ciudad2/desde/{dia1}/{mes1}/{anio1}/hasta/{dia2}/{mes2}/{anio2}")
+	public Response consultaTraficoEntreCiudades(@javax.ws.rs.PathParam("ciudad1") String ciudad1, @javax.ws.rs.PathParam("ciudad2") String ciudad2,
+			@javax.ws.rs.PathParam("dia1") int dia1,@javax.ws.rs.PathParam("mes1") int mes1,@javax.ws.rs.PathParam("anio1")int anio1,
+			@javax.ws.rs.PathParam("dia2")int dia2,@javax.ws.rs.PathParam("mes2")int mes2,@javax.ws.rs.PathParam("anio2")int anio2)
+	{
+		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
+		ConsultaTraficoAereo consulta = null;
+		try {
+			consulta = tm.consultarTraficoAereoCiudades(ciudad1,ciudad2,dia1,mes1,anio1,dia2,mes2,anio2);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(consulta).build();
 	}
 
 }
