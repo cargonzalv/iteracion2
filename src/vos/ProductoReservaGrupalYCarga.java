@@ -6,7 +6,7 @@ import java.util.Date;
 public class ProductoReservaGrupalYCarga {
 
 	private ArrayList<Reserva> reservasViajeros;
-	private int idVuelo;
+	private String idVuelo;
 	private Viajeros viajeroEncargado;
 	private String clase;
 	private String fecha;
@@ -24,7 +24,7 @@ public class ProductoReservaGrupalYCarga {
 	 * @param aeroLleg
 	 * @param reservasCargas
 	 */
-	public ProductoReservaGrupalYCarga(ArrayList<Reserva> reservasViajeros, int idVuelo, String clase,
+	public ProductoReservaGrupalYCarga(ArrayList<Reserva> reservasViajeros, String idVuelo, String clase,
 			String fecha, String tipoReserva, String aeroSal, String aeroLleg, ArrayList<ReservaCarga> reservasCargas, Viajeros viajeroEncargado) {
 		super();
 		this.reservasViajeros = reservasViajeros;
@@ -43,10 +43,10 @@ public class ProductoReservaGrupalYCarga {
 	public void setReservasViajeros(ArrayList<Reserva> reservasViajeros) {
 		this.reservasViajeros = reservasViajeros;
 	}
-	public int getIdVuelo() {
+	public String getIdVuelo() {
 		return idVuelo;
 	}
-	public void setIdVuelo(int idVuelo) {
+	public void setIdVuelo(String idVuelo) {
 		this.idVuelo = idVuelo;
 	}
 	public String getClase() {

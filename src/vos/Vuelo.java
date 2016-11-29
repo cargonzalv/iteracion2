@@ -12,7 +12,7 @@ public class Vuelo {
 
 	
 	@JsonProperty(value="id")
-	private int id;
+	private String id;
 
 	
 	
@@ -40,7 +40,7 @@ public class Vuelo {
 	public final static String VIAJEROS = "Viajeros";
 	public final static String CARGA = "Carga";
 
-	public Vuelo(int id, int frecuencia, String aerolinea,
+	public Vuelo(String id, int frecuencia, String aerolinea,
 			 Aeropuerto aeropuertoSA, Aeropuerto aeropuertoLL, double distancia, int duracion, String tipoVuelo) {
 		super();
 		this.id = id;
@@ -54,11 +54,11 @@ public class Vuelo {
 	}
 
 	
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

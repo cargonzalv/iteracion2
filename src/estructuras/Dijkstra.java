@@ -131,26 +131,26 @@ public class Dijkstra {
 		Collections.reverse(path);
 		return path;
 	}
-	public ArrayList<ViajeViajeros> getEscalas(String source, String target) throws SQLException, ParseException {
-		ArrayList<ViajeViajeros> path = new ArrayList<ViajeViajeros>();
-		String step = target;
-		// check if a path exists
-		if (predecessors.get(step) == null) {
-			return null;
-		}
-		while (predecessors.get(step) != null && !predecessors.get(step).equals(source)) {
-			String step1 = step;
-			String step2 = predecessors.get(step);
-
-			path.add(daoVuelos.getVueloViajerosAeropuertos(step2, step1));
-
-			step = predecessors.get(step);
-		}
-		path.add(daoVuelos.getVueloViajerosAeropuertos(source, step));
-		// Put it into the correct order
-		Collections.reverse(path);
-		return path;
-	}
+//	public ArrayList<ViajeViajeros> getEscalas(String source, String target) throws SQLException, ParseException {
+//		ArrayList<ViajeViajeros> path = new ArrayList<ViajeViajeros>();
+//		String step = target;
+//		// check if a path exists
+//		if (predecessors.get(step) == null) {
+//			return null;
+//		}
+//		while (predecessors.get(step) != null && !predecessors.get(step).equals(source)) {
+//			String step1 = step;
+//			String step2 = predecessors.get(step);
+//
+//			path.add(daoVuelos.getVueloViajerosAeropuertos(step2, step1));
+//
+//			step = predecessors.get(step);
+//		}
+//		path.add(daoVuelos.getVueloViajerosAeropuertos(source, step));
+//		// Put it into the correct order
+//		Collections.reverse(path);
+//		return path;
+//	}
 
 
 }

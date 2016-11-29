@@ -7,7 +7,7 @@ public class CreacionReservaGrupalYCarga {
 
 	private ArrayList<Integer> idViajeros;
 	private ArrayList<String> tipoIdViajeros;
-	private int idVuelo;
+	private String idVuelo;
 	private String clase;
 	private String fecha;
 	private String tipoReserva;
@@ -56,7 +56,7 @@ public class CreacionReservaGrupalYCarga {
 	 * @param aeroLleg
 	 * @param cargas
 	 */
-	public CreacionReservaGrupalYCarga(ArrayList<Integer> viajeros,ArrayList<String> tipoIdViajeros, int vuelo, String clase, String fecha,
+	public CreacionReservaGrupalYCarga(ArrayList<Integer> viajeros,ArrayList<String> tipoIdViajeros, String vuelo, String clase, String fecha,
 			String tipoReserva, String aeroSal, String aeroLleg, ArrayList<Integer> cargas) {
 		super();
 		this.setIdViajeros(viajeros);
@@ -70,10 +70,10 @@ public class CreacionReservaGrupalYCarga {
 		this.setIdCargas(cargas);
 	}
 
-	public int getIdVuelo() {
+	public String getIdVuelo() {
 		return idVuelo;
 	}
-	public void setIdVuelo(int idVuelo) {
+	public void setIdVuelo(String idVuelo) {
 		this.idVuelo = idVuelo;
 	}
 	public ArrayList<Integer> getIdViajeros() {

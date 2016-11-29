@@ -10,9 +10,9 @@ public class ViajeViajeros extends Viaje {
 	private double costoEcon;
 	private int cantidadViajeros;
 	private ArrayList<Viajeros> viajeros;
-	public ViajeViajeros(int id,int idVuelo, Date horaSalida, Date horaLlegada, int frecuencia, String tipoVuelo, String aerolinea,
+	public ViajeViajeros(String id, Date horaSalida, Date horaLlegada, int frecuencia, String tipoVuelo, String aerolinea,
 			String avion, Aeropuerto aeropuertoSA, Aeropuerto aeropuertoLL, double distancia, int duracion, boolean realizado, double costoEjec, double costoEcon) {
-		super(id,idVuelo, horaSalida, horaLlegada, frecuencia, TIPO, aerolinea, avion, aeropuertoSA, aeropuertoLL, distancia,
+		super(id, horaSalida, horaLlegada, frecuencia, TIPO, aerolinea, avion, aeropuertoSA, aeropuertoLL, distancia,
 				duracion, realizado,tipoVuelo);
 		this.costoEjec = costoEjec;
 		this.setCostoEcon(costoEcon);

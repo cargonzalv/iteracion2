@@ -12,6 +12,7 @@ package rest;
 
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.servlet.ServletContext;
 import javax.websocket.server.PathParam;
@@ -31,6 +32,7 @@ import tm.VuelosAndesMaster;
 import vos.ConsultaTraficoAereo;
 import vos.ConsultaViajes;
 import vos.ListaVuelos;
+import vos.Viaje;
 import vos.Vuelo;
 import vos.ViajeViajeros;
 
@@ -63,22 +65,22 @@ public class VuelosAndesVuelosServices {
 	}
 
 
-	@PUT
-	@Path("vuelo/{idVuelo}/AsociarAvion/{idAvion}")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response asociarAvion(@javax.ws.rs.PathParam("idVuelo") int idVuelo, @javax.ws.rs.PathParam("idAvion") String Avion){
-		VuelosAndesMaster tm=new VuelosAndesMaster(getPath());
-		Vuelo vuelo=null;
-		try{
-			tm.asociarVuelo(idVuelo, Avion);
-			vuelo=tm.darVuelo(idVuelo);
-		}
-		catch (Exception e) {
-			return Response.status(500).entity(doErrorMessage(e)).build();
-		}
-		return Response.status(200).entity(vuelo).build();
-	}
+//	@PUT
+//	@Path("vuelo/{idVuelo}/AsociarAvion/{idAvion}")
+//	@Consumes(MediaType.APPLICATION_JSON)
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public Response asociarAvion(@javax.ws.rs.PathParam("idVuelo") int idVuelo, @javax.ws.rs.PathParam("idAvion") String Avion){
+//		VuelosAndesMaster tm=new VuelosAndesMaster(getPath());
+//		Vuelo vuelo=null;
+//		try{
+//			tm.asociarVuelo(idVuelo, Avion);
+//			vuelo=tm.darVuelo(idVuelo);
+//		}
+//		catch (Exception e) {
+//			return Response.status(500).entity(doErrorMessage(e)).build();
+//		}
+//		return Response.status(200).entity(vuelo).build();
+//	}
 
 
 
@@ -151,7 +153,7 @@ public class VuelosAndesVuelosServices {
 	@PUT
 	@Path("vuelo/{idVuelo}/RegistrarVuelo")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response registrarVueloRealizado(@javax.ws.rs.PathParam("idVuelo") int idVuelo)
+	public Response registrarVueloRealizado(@javax.ws.rs.PathParam("idVuelo") String idVuelo)
 	{
 		Vuelo vuelo = null;
 		VuelosAndesMaster tm= new VuelosAndesMaster(getPath());
@@ -169,12 +171,12 @@ public class VuelosAndesVuelosServices {
 	@Path("vuelo/{idVuelo}/GenerarReporte")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public String generarReporteVuelo(@javax.ws.rs.PathParam("idVuelo") int idVuelo)
+	public String generarReporteVuelo(@javax.ws.rs.PathParam("idVuelo") String idVuelo)
 	{
 		double resp = 0;
 		VuelosAndesMaster tm= new VuelosAndesMaster(getPath());
 		try{
-			resp = tm.generarReporteVuelo(idVuelo);
+			resp = tm.generarReporteVuelo(idVuelo, new Date());
 		}
 		catch (Exception e) {
 			return e.getMessage();
@@ -190,7 +192,7 @@ public class VuelosAndesVuelosServices {
 	@DELETE
 	@Path("/cancelarVuelo/{idVuelo}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response cancelarVuelo(@javax.ws.rs.PathParam("idVuelo") int idVuelo) {
+	public Response cancelarVuelo(@javax.ws.rs.PathParam("idVuelo") String idVuelo) {
 		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
 		ViajeViajeros viaje = null;
 		try {
@@ -201,8 +203,63 @@ public class VuelosAndesVuelosServices {
 		return Response.status(200).entity(viaje).build();
 	}
 	
+	/**iter 4 RF1*/
 	@GET 
-	@Path("consultaTrafico/{ciudad1}/{ciudad2/desde/{dia1}/{mes1}/{anio1}/hasta/{dia2}/{mes2}/{anio2}")
+	@Path("aeropuerto/{idAeropuerto}/{tipoParametro}/{parametro}/{organizacion}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response darVueloAeropuertoParametroOrganizado(@javax.ws.rs.PathParam("idAeropuerto") String idAeropuerto,@javax.ws.rs.PathParam("tipoParametro") String tipoParam,@javax.ws.rs.PathParam("parametro") String param,@javax.ws.rs.PathParam("organizacion") String organizacion)
+	{
+		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
+		ArrayList<Viaje> consulta = null;
+		try {
+			consulta = tm.darVueloAeropuertoParametroOrganizado(idAeropuerto, tipoParam, param, organizacion);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(consulta).build();
+
+	}
+	
+
+	/**iter 4 RF2*/
+	@GET 
+	@Path("aeropuerto/{idAeropuerto}/{dia1}/{mes1}/{anio1}/hasta/{dia2}/{mes2}/{anio2}/aerolinea/{aerolinea}/avion/{avion}/salida/{horaSal}/llegada/{horaLleg}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response darVueloAeropuertoNoParametros(@javax.ws.rs.PathParam("idAeropuerto") String idAeropuerto,@javax.ws.rs.PathParam("dia1") int dia1,@javax.ws.rs.PathParam("mes1") int mes1,@javax.ws.rs.PathParam("anio1")int anio1,
+			@javax.ws.rs.PathParam("dia2")int dia2,@javax.ws.rs.PathParam("mes2")int mes2,@javax.ws.rs.PathParam("anio2")int anio2,@javax.ws.rs.PathParam("aerolinea") String aerolinea, 
+			@javax.ws.rs.PathParam("avion") String avion, @javax.ws.rs.PathParam("horaSal") String horaSal,@javax.ws.rs.PathParam("horaLleg") String horaLleg)
+	{
+		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
+		ArrayList<Viaje> consulta = null;
+		try {
+			consulta = tm.darVuelosAeropuertoNoParametros(idAeropuerto, dia1, mes1, anio1, dia2, mes2, anio2,aerolinea,avion,horaSal,horaLleg);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(consulta).build();
+
+	}
+	/**iter 4 RF3*/
+	@GET 
+	@Path("consultarViajes/clase/{clase}/minMillas/{millas}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response consultaViajesDeViajeros(@javax.ws.rs.PathParam("clase") String clase,@javax.ws.rs.PathParam("millas") int millas)
+	{
+		VuelosAndesMaster tm = new VuelosAndesMaster(getPath());
+		ArrayList<ConsultaViajes> consulta = null;
+		try {
+			consulta = tm.consultarViajesViajeroParametros( clase, millas);
+		} catch (Exception e) {
+			return Response.status(500).entity(doErrorMessage(e)).build();
+		}
+		return Response.status(200).entity(consulta).build();
+	}
+
+	
+	/**iter 4 RF4*/
+	@GET 
+	@Path("consultaTrafico/{ciudad1}/{ciudad2}/desde/{dia1}/{mes1}/{anio1}/hasta/{dia2}/{mes2}/{anio2}")
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response consultaTraficoEntreCiudades(@javax.ws.rs.PathParam("ciudad1") String ciudad1, @javax.ws.rs.PathParam("ciudad2") String ciudad2,
 			@javax.ws.rs.PathParam("dia1") int dia1,@javax.ws.rs.PathParam("mes1") String mes1,@javax.ws.rs.PathParam("anio1")int anio1,
 			@javax.ws.rs.PathParam("dia2")int dia2,@javax.ws.rs.PathParam("mes2")String mes2,@javax.ws.rs.PathParam("anio2")int anio2)

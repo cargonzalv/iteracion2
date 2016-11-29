@@ -5,7 +5,6 @@ import java.util.Date;
 public class Viaje extends Vuelo
 
 {
-	private int id;
 	private Date horaSalida;
 
 	private Date horaLlegada;
@@ -14,16 +13,6 @@ public class Viaje extends Vuelo
 	private String tipoViaje;
 
 	private String avion;
-
-
-	public int getId() {
-		return id;
-	}
-
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 
 	public Date getHoraSalida() {
@@ -76,14 +65,13 @@ public class Viaje extends Vuelo
 	}
 
 
-	public Viaje(int id, int idVuelo, Date horaSalida, Date horaLlegada, int frecuencia, String tipoViaje, String aerolinea,
+	public Viaje(String id, Date horaSalida, Date horaLlegada, int frecuencia, String tipoViaje, String aerolinea,
 			String avion, Aeropuerto aeropuertoSA, Aeropuerto aeropuertoLL, double distancia, int duracion,
 			boolean realizado, String tipoVuelo ) 
 	{
-		super(idVuelo,frecuencia, aerolinea, aeropuertoSA, aeropuertoLL, distancia,
+		super(id,frecuencia, aerolinea, aeropuertoSA, aeropuertoLL, distancia,
 				duracion, tipoVuelo);
 		// TODO Auto-generated constructor stub
-		this.id = id;
 		this.horaSalida = horaSalida;
 		this.horaLlegada = horaLlegada;
 		this.realizado = realizado;

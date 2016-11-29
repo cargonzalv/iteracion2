@@ -30,6 +30,7 @@ import vos.Reserva;
 import vos.ReservaCarga;
 import vos.ReservaViajeros;
 import vos.ReservaViajerosMultiple;
+import vos.Viaje;
 import vos.ReservaViajeros;
 
 
@@ -107,7 +108,7 @@ public class VuelosAndesMaster {
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			daoVuelos.setConn(conn);
-			daoVuelos.updateVuelo(video);
+			//daoVuelos.updateVuelo(video);
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -176,7 +177,7 @@ public class VuelosAndesMaster {
 	}
 
 
-	public ViajeViajeros deleteViaje(int idVuelo) throws Exception {
+	public ViajeViajeros deleteViaje(String idVuelo) throws Exception {
 		DAOTablaVuelos daoVuelos = new DAOTablaVuelos();
 		ViajeViajeros viaje = null;
 		try 
@@ -186,7 +187,7 @@ public class VuelosAndesMaster {
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			daoVuelos.setConn(conn);
-			viaje = daoVuelos.deleteVueloViajeros(idVuelo);
+//			viaje = daoVuelos.deleteVueloViajeros(idVuelo);
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -217,14 +218,14 @@ public class VuelosAndesMaster {
 		return viaje;
 	}
 
-	public void asociarVuelo(int idVuelo, String Avion) throws Exception {
+	public void asociarVuelo(String idVuelo, String Avion) throws Exception {
 		DAOTablaVuelos daoVuelos= new DAOTablaVuelos();
 		try{
 			this.conn=darConexion();
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			daoVuelos.setConn(conn);
-			daoVuelos.asociarVuelo(idVuelo,Avion);
+			//daoVuelos.asociarVuelo(idVuelo,Avion);
 			conn.commit();
 		}
 		catch (SQLException e) {
@@ -267,7 +268,7 @@ public class VuelosAndesMaster {
 			conn.setAutoCommit(false);
 			conn.setReadOnly(true);
 			daoVuelos.setConn(conn);
-			consultas = daoVuelos.consultarViajesViajero(idViajero, tipoIdViajero);
+			//consultas = daoVuelos.consultarViajesViajero(idViajero, tipoIdViajero);
 		}
 		catch (SQLException e) {
 			System.err.println("generalException:"+e.getMessage());
@@ -332,12 +333,12 @@ public class VuelosAndesMaster {
 			if(avion.getTipo().equals(Avion.CARGA))
 			{
 				AvionCarga avionc = daoAviones.darAvionCarga(numSerie);
-				consulta = daoAviones.consultarAvionCarga(avionc);
+//				consulta = daoAviones.consultarAvionCarga(avionc);
 			}
 			else if(avion.getTipo().equals(Avion.VIAJEROS))
 			{
 				AvionViajeros avionv = daoAviones.darAvionViajeros(numSerie);
-				consulta = daoAviones.consultarAvionViajeros(avionv);
+//				consulta = daoAviones.consultarAvionViajeros(avionv);
 			}
 		}
 		catch (SQLException e) {
@@ -419,7 +420,7 @@ public class VuelosAndesMaster {
 		return new ListaVuelos(vuelos);
 	}
 
-	public Vuelo darVuelo(int idVuelo) throws Exception {
+	public Vuelo darVuelo(String idVuelo) throws Exception {
 		DAOTablaVuelos daoVuelos= new DAOTablaVuelos();
 		Vuelo vuelo= null;
 		try{
@@ -462,7 +463,7 @@ public class VuelosAndesMaster {
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
 			daoVuelos.setConn(conn);
-			daoVuelos.asociarVuelo(idVuelo,idAvion);
+			//daoVuelos.asociarVuelo(idVuelo,idAvion);
 			conn.commit();
 		}
 		catch (SQLException e) {
@@ -494,7 +495,7 @@ public class VuelosAndesMaster {
 
 
 
-	public double generarReporteVuelo(int idVuelo) throws Exception {
+	public double generarReporteVuelo(String idVuelo,Date horaSalida) throws Exception {
 		DAOTablaVuelos daoVuelos= new DAOTablaVuelos();
 		double costo = 0;
 		try{
@@ -504,7 +505,7 @@ public class VuelosAndesMaster {
 			daoVuelos.setConn(conn);
 			DAOTablaReservas daoReservas = new DAOTablaReservas();
 			daoReservas.setConn(conn);
-			costo=daoVuelos.generarReporte(idVuelo, daoReservas);
+			costo=daoVuelos.generarReporte(idVuelo,horaSalida, daoReservas);
 		}
 		catch (SQLException e) {
 			System.err.println("generalException:"+e.getMessage());
@@ -568,7 +569,7 @@ public class VuelosAndesMaster {
 		return reserva;
 	}
 
-	public void registrarVuelo(int idVuelo) throws Exception{
+	public void registrarVuelo(String idVuelo) throws Exception{
 		DAOTablaVuelos daoVuelos= new DAOTablaVuelos();
 		try{
 			this.conn=darConexion();
@@ -688,7 +689,7 @@ public class VuelosAndesMaster {
 			daoReservas.setConn(conn);
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-			reservaGrupal = daoReservas.crearReservaGruposYCargas(reserva);
+//			reservaGrupal = daoReservas.crearReservaGruposYCargas(reserva);
 			conn.commit();
 		}
 		catch (SQLException e) {
@@ -760,7 +761,7 @@ public class VuelosAndesMaster {
 	}
 
 	public Reserva createReservaVueloViajero(ReservaViajeros reserva) throws Exception {
-		Reserva res;
+		Reserva res = null;
 		DAOTablaReservas daoReservas = new DAOTablaReservas();
 		try 
 		{
@@ -769,7 +770,7 @@ public class VuelosAndesMaster {
 			daoReservas.setConn(conn);
 			conn.setAutoCommit(false);
 			conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-			res = daoReservas.createReservaViajero(reserva);
+//			res = daoReservas.createReservaViajero(reserva);
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -887,7 +888,7 @@ public class VuelosAndesMaster {
 			conn.setAutoCommit(false);
 			conn.setReadOnly(true);
 			daoVuelos.setConn(conn);
-			vuelos=daoVuelos.getVuelosAeropuerto(idAeropuerto);
+			//vuelos=daoVuelos.getVuelosAeropuerto(idAeropuerto);
 		}
 		catch (SQLException e) {
 			System.err.println("generalException:"+e.getMessage());
@@ -914,16 +915,16 @@ public class VuelosAndesMaster {
 		}
 		return vuelos;	}
 
-	public ArrayList<Vuelo> darVueloAeropuertoParametroOrganizado(String aeropuerto, String tipoParametro,String parametro, String organizacion) throws Exception {
+	public ArrayList<Viaje> darVueloAeropuertoParametroOrganizado(String aeropuerto, String tipoParametro,String parametro, String organizacion) throws Exception {
 		DAOTablaVuelos daoVuelos= new DAOTablaVuelos();
-		ArrayList<Vuelo> vuelos= null;
+		ArrayList<Viaje> vuelos= null;
 		try{
 			this.conn=darConexion();
 			daoVuelos.setConn(conn);
 			conn.setAutoCommit(false);
 			conn.setReadOnly(true);
 			if(tipoParametro.equals("Aeronave")){
-				vuelos=daoVuelos.getVuelosAeropuertoAeronaveOrganizado(aeropuerto,parametro,organizacion);
+				vuelos=daoVuelos.getViajesAeropuertoAeronaveOrganizado(aeropuerto,parametro,organizacion);
 			}
 			else if(tipoParametro.equals("Aerolinea")){
 				vuelos=daoVuelos.getViajesAeropuertoAerolineaOrganizado(aeropuerto, parametro, organizacion);
@@ -933,7 +934,7 @@ public class VuelosAndesMaster {
 				String[] fechas= parametro.split(";");
 				Date fechaMin=spld.parse(fechas[0]);
 				Date fechaMax=spld.parse(fechas[1]);
-				vuelos=daoVuelos.getVuelosAeropuertoRangoFechasOrganizado(aeropuerto, fechaMin, fechaMax, organizacion);
+				vuelos=daoVuelos.getViajesAeropuertoRangoFechasOrganizado(aeropuerto, fechaMin, fechaMax, organizacion);
 
 			}
 			else if(tipoParametro.equals("Fechas Salida LLegada")){
@@ -941,7 +942,7 @@ public class VuelosAndesMaster {
 				String[] fechas= parametro.split(";");
 				Date fechaMin=spld.parse(fechas[0]);
 				Date fechaMax=spld.parse(fechas[1]);
-				vuelos=daoVuelos.getVuelosAeropuertoHoraSalidaLlegadaOrganizado(aeropuerto, fechaMin, fechaMax, organizacion);
+				vuelos=daoVuelos.getViajesAeropuertoHoraSalidaLlegadaOrganizado(aeropuerto, fechaMin, fechaMax, organizacion);
 
 			}
 
@@ -973,15 +974,15 @@ public class VuelosAndesMaster {
 		return vuelos;
 	}
 
-	public ArrayList<Vuelo> darVuelosAeropuertoNoParametros(String idAeropuerto, Date fecha1, Date fecha2, String aerolinea, String aeronave,Date fechaSalida, Date fechaLlegada)throws Exception {
+	public ArrayList<Viaje> darVuelosAeropuertoNoParametros(String idAeropuerto, int dia1, int mes1,int anio1, int dia2,int mes2, int anio2,  String aerolinea, String aeronave, String horaSal, String horaLleg)throws Exception {
 		DAOTablaVuelos daoVuelos= new DAOTablaVuelos();
-		ArrayList<Vuelo> vuelos= null;
+		ArrayList<Viaje> viajes= null;
 		try{
 			this.conn=darConexion();
 			conn.setAutoCommit(false);
 			conn.setReadOnly(true);
 			daoVuelos.setConn(conn);
-			vuelos=daoVuelos.getVuelosAeropuertoNoParametro(idAeropuerto, fecha1, fecha2, aerolinea, aeronave, fechaSalida, fechaLlegada);
+			viajes=daoVuelos.getViajesAeropuertoNoParametro(idAeropuerto, dia1,mes1,anio1,dia2,mes2,anio2, aerolinea, aeronave, horaSal, horaLleg);
 		}
 		catch (SQLException e) {
 			System.err.println("generalException:"+e.getMessage());
@@ -1006,9 +1007,9 @@ public class VuelosAndesMaster {
 				throw e2;
 			}
 		}
-		return vuelos;	}
+		return viajes;	}
 	
-	public ArrayList<ConsultaViajes> consultarViajesViajeroParametros(int idViajero, String tipoIdViajero, String clase, double millas)
+	public ArrayList<ConsultaViajes> consultarViajesViajeroParametros(String clase, double millas)
 	{			
 		DAOTablaVuelos daoVuelos= null;
 		ArrayList<ConsultaViajes> consultas= null;
@@ -1020,7 +1021,7 @@ public class VuelosAndesMaster {
 			conn.setAutoCommit(false);
 			conn.setReadOnly(true);
 			daoVuelos.setConn(conn);
-			consultas = daoVuelos.consultarViajesViajero(idViajero, tipoIdViajero);
+			consultas = daoVuelos.consultarViajesViajeroParametros( clase, millas);
 		}
 		catch (SQLException e) {
 			System.err.println("generalException:"+e.getMessage());
@@ -1103,7 +1104,12 @@ public class VuelosAndesMaster {
 			}
 			System.err.println("generalException:"+e.getMessage());
 			e.printStackTrace();
-			throw e;
+			try {
+				throw e;
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 
 		}
 		finally {

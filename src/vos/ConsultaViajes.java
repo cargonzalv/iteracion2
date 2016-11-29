@@ -22,7 +22,7 @@ public class ConsultaViajes
 	 * @param tiempo
 	 * @param costo
 	 */
-	public ConsultaViajes(ArrayList<ReservaViajeros> reservas, int idVuelo, Aerolinea aerolinea, String fechaSalida, String fechaLlegada,
+	public ConsultaViajes(int idViajero, String tipoIdViajero, String idVuelo, Aerolinea aerolinea, String fechaSalida, String fechaLlegada,
 			String aeroSal, String aeroLleg, double millas, double costo) {
 		super();
 		this.setIdVuelo(idVuelo);
@@ -33,7 +33,8 @@ public class ConsultaViajes
 		this.aeroLleg = aeroLleg;
 		this.millas = millas;
 		this.costo = costo;
-		this.setReservas(reservas);
+		this.idViajero = idViajero;
+		this.tipoIdViajero = tipoIdViajero;
 	}
 	public void setAerolinea(Aerolinea aerolinea) {
 		this.aerolinea = aerolinea;
@@ -76,22 +77,31 @@ public class ConsultaViajes
 		this.costo = costo;
 	}
 	
-	public int getIdVuelo() {
+	public String getIdVuelo() {
 		return idVuelo;
 	}
-	public void setIdVuelo(int idVuelo) {
+	public void setIdVuelo(String idVuelo) {
 		this.idVuelo = idVuelo;
 	}
 
-	public ArrayList<ReservaViajeros> getReservas() {
-		return reservas;
+	
+
+	public int getIdViajero() {
+		return idViajero;
 	}
-	public void setReservas(ArrayList<ReservaViajeros> reservas) {
-		this.reservas = reservas;
+	public void setIdViajero(int idViajero) {
+		this.idViajero = idViajero;
+	}
+
+	public String getTipoIdViajero() {
+		return tipoIdViajero;
+	}
+	public void setTipoIdViajero(String tipoIdViajero) {
+		this.tipoIdViajero = tipoIdViajero;
 	}
 
 	private ArrayList<ReservaViajeros> reservas;
-	private int idVuelo;
+	private String idVuelo;
 	private Aerolinea aerolinea;
 	private String fechaSalida;
 	private String fechaLlegada;
@@ -99,6 +109,8 @@ public class ConsultaViajes
 	private String aeroLleg;
 	private double millas;
 	private double costo;
+	private int idViajero;
+	private String tipoIdViajero;
 	
 }
 	

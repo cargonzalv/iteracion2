@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import vos.Carga;
 import vos.Usuarios;
+import vos.ViajeViajeros;
 import vos.Viajeros;
 
 public class DAOTablaViajeros {
@@ -34,20 +35,35 @@ public class DAOTablaViajeros {
 	public Viajeros getViajero(int idViajero, String tipoIdViajero) throws SQLException
 	{
 		Viajeros viajero=null;
-		String sql="SELECT * FROM ISIS2304A131620.VIAJEROS WHERE ID ="+idViajero+"AND TIPO_ID = "+tipoIdViajero;
+		String sql="SELECT * FROM ISIS2304A131620.VIAJEROS WHERE ID ="+idViajero+"AND TIPO_ID = '"+tipoIdViajero+"'";
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		ResultSet rs=prepStmt.executeQuery();
 		if(rs.next()){
 			Usuarios usuario = getUsuario(idViajero, tipoIdViajero);
-			viajero = new Viajeros(idViajero, tipoIdViajero, usuario.getNombre(), usuario.getRol(), usuario.getClave(), usuario.getAerloneaF())	;			
+			viajero = new Viajeros(idViajero, tipoIdViajero, usuario.getNombre(), usuario.getRol(), usuario.getClave(), usuario.getAerloneaF(),0)	;			
 		}
 		return viajero;
+	}
+	
+	public ArrayList<Viajeros> getViajeros() throws SQLException
+	{
+		ArrayList<Viajeros> viajeros=new ArrayList<>();
+		String sql="SELECT * FROM ISIS2304A131620.VIAJEROS";
+		PreparedStatement prepStmt= conn.prepareStatement(sql);
+		ResultSet rs=prepStmt.executeQuery();
+		while(rs.next()){
+			int idViajero = rs.getInt("ID");
+			String tipoIdViajero = rs.getString("TIPO_ID");
+			Usuarios usuario = getUsuario(idViajero, tipoIdViajero);
+			viajeros.add(new Viajeros(idViajero, tipoIdViajero, usuario.getNombre(), usuario.getRol(), usuario.getClave(), usuario.getAerloneaF(),0));			
+		}
+		return viajeros;
 	}
 	
 	public Usuarios getUsuario(int idUsuario, String tipoIdUsuario) throws SQLException
 	{
 		Usuarios usuario = null;
-		String sql="SELECT * FROM ISIS2304A131620.USUARIO WHERE ID ="+idUsuario+"AND TIPO_ID = "+tipoIdUsuario;
+		String sql="SELECT * FROM ISIS2304A131620.USUARIO WHERE ID ="+idUsuario+"AND TIPO_ID = '"+tipoIdUsuario+"'";
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		ResultSet rs=prepStmt.executeQuery();
 		if(rs.next()){
@@ -59,8 +75,6 @@ public class DAOTablaViajeros {
 		}
 		return usuario;
 	}
-
-
 
 
 

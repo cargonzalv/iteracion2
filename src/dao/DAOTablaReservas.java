@@ -23,6 +23,7 @@ import vos.Reserva;
 import vos.ReservaCarga;
 import vos.ReservaViajeros;
 import vos.ReservaViajerosMultiple;
+import vos.Viaje;
 import vos.ReservaViajeros;
 import vos.Viajeros;
 import vos.Vuelo;
@@ -90,7 +91,7 @@ public class DAOTablaReservas {
 			Reserva reservaP = getReserva(idReserva);
 			int idViajero=rs.getInt("ID_VIAJERO");
 			String tipoId = rs.getString("TIPO_ID_VIAJERO");
-			int idVuelo = rs.getInt("ID_VUELO");
+			String idVuelo = rs.getString("ID_VUELO");
 			String tipo = rs.getString("TIPO");
 			ReservaViajeros reserva = new ReservaViajeros(id, idReserva ,idVuelo, idViajero,tipoId, tipo, reservaP.getFecha(),Reserva.VIAJEROS, reservaP.getAeroSal(),reservaP.getAeroLleg());
 			reservas.add(reserva);
@@ -107,8 +108,8 @@ public class DAOTablaReservas {
 			Reserva reservaP = getReserva(idReserva);
 			int idViajero=rs.getInt("ID_VIAJERO");
 			String tipoId = rs.getString("TIPO_ID_VIAJERO");
-			int idVuelo = rs.getInt("ID_VUELO");
-			ViajeViajeros vuelo = daoVuelos.getVueloViajeros(idVuelo);
+			String idVuelo = rs.getString("ID_VUELO");
+			ViajeViajeros vuelo = daoVuelos.getViajeViajeros(idVuelo, new Date());
 			String tipo = rs.getString("TIPO");
 			ReservaViajeros reserva = new ReservaViajeros(id, idReserva ,idVuelo, idViajero,tipoId, tipo, reservaP.getFecha(),Reserva.VIAJEROS, vuelo.getAeropuertoSA().getCodigo(),vuelo.getAeropuertoLL().getCodigo());
 			reservas.add(reserva);
@@ -124,7 +125,7 @@ public class DAOTablaReservas {
 			int idReserva = rs.getInt("ID_RESERVA_GENERAL");
 			Reserva reservaP = getReserva(idReserva);
 			int idViajero=rs.getInt("ID_VIAJERO");
-			int idVuelo = rs.getInt("ID_VUELO");
+			String idVuelo = rs.getString("ID_VUELO");
 			String tipoId = rs.getString("TIPO_ID_VIAJERO");
 			String tipo = rs.getString("TIPO");
 			reserva = new ReservaViajeros(id, idReserva ,idVuelo, idViajero,tipoId, tipo, reservaP.getFecha(),Reserva.VIAJEROS, reservaP.getAeroSal(),reservaP.getAeroLleg());
@@ -133,18 +134,18 @@ public class DAOTablaReservas {
 	}
 
 
-	public int getIdVueloReserva(int idReserva) throws SQLException
+	public String getIdVueloReserva(int idReserva) throws SQLException
 	{
 		String sql= "SELECT * FROM ISIS2304A131620.RESERVA_VIAJEROS WHERE ID ="+idReserva;
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		ResultSet rs=prepStmt.executeQuery();
 		if(rs.next()){
-			int idVuelo=rs.getInt("ID_VUELO");
+			String idVuelo=rs.getString("ID_VUELO");
 			return idVuelo;
 		}
-		return -1;
+		return null;
 	}
-	public ArrayList<ReservaViajeros> getReservasViajerosPorVuelo(int idVuelo) throws SQLException {
+	public ArrayList<ReservaViajeros> getReservasViajerosPorVuelo(String idVuelo) throws SQLException {
 		ArrayList<ReservaViajeros> reserva= new ArrayList<ReservaViajeros>();
 		String sql= "SELECT * FROM ISIS2304A131620.RESERVA_VIAJEROS WHERE ID_VUELO ="+idVuelo;
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
@@ -173,7 +174,7 @@ public class DAOTablaReservas {
 		ResultSet rs=prepStmt.executeQuery();
 		if(rs!=null){
 			int id= rs.getInt("ID");
-			int idVuelo=rs.getInt("ID_VUELO");
+			String idVuelo = rs.getString("ID_VUELO");
 			int idViajero=rs.getInt("ID_REMITENTE");
 			int idCarga = rs.getInt("ID_CARGA");
 			String tipoId = rs.getString("TIPO_ID_REMITENTE");
@@ -194,19 +195,19 @@ public class DAOTablaReservas {
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		ResultSet rs=prepStmt.executeQuery();
 		while(rs.next()){
-			int idVuelo= rs.getInt("ID_VUELO");
+			String idVuelo= rs.getString("ID_VUELO");
 
 
-			vuelos.add(daoVuelos.getVueloViajeros(idVuelo));
+			vuelos.add(daoVuelos.getViajeViajeros(idVuelo, new Date()));
 		}
 		return vuelos;
 	}
 
-	public ArrayList<ReservaViajeros> getReservasViajerosPorVueloYViajero(int idViajero, String tipoIdViajero, int idVuelo) throws SQLException
+	public ArrayList<ReservaViajeros> getReservasViajerosPorVueloYViajero(int idViajero, String tipoIdViajero, String idVuelo) throws SQLException
 	{
 		String sql= "SELECT * FROM (SELECT * FROM RESERVA_VIAJEROS WHERE ID_VIAJERO = "+idViajero+" AND "
 				+ "TIPO_ID_VIAJERO = '"+tipoIdViajero+"')T1 JOIN "
-				+ "(SELECT * FROM  VUELO_VIAJEROS WHERE ID = "+idVuelo+")T2 ON T1.ID_VUELO = T2.ID";
+				+ "(SELECT * FROM  VUELO_VIAJEROS WHERE ID = '"+idVuelo+"')T2 ON T1.ID_VUELO = T2.ID";
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
 		ResultSet rs = prepStmt.executeQuery();
 		ArrayList<ReservaViajeros> reservas= new ArrayList<ReservaViajeros>();
@@ -220,7 +221,7 @@ public class DAOTablaReservas {
 		return reservas;
 	}
 
-	public ArrayList<ReservaCarga> getReservasCargaPorVuelo(int idVuelo) throws SQLException {
+	public ArrayList<ReservaCarga> getReservasCargaPorVuelo(String idVuelo) throws SQLException {
 		ArrayList<ReservaCarga> reserva= new ArrayList<ReservaCarga>();
 		String sql= "SELECT * FROM ISIS2304A131620.RESERVA_CARGA WHERE ID_VUELO ="+idVuelo;
 		PreparedStatement prepStmt= conn.prepareStatement(sql);
@@ -236,120 +237,120 @@ public class DAOTablaReservas {
 		}
 		return reserva;
 	}
-	public Reserva createReservaViajero(ReservaViajeros reserva) throws Exception 
-	{
-		DAOTablaVuelos daoVuelos = new DAOTablaVuelos();
-		daoVuelos.setConn(conn);
-		DAOTablaAeropuertos daoAeropuertos = new DAOTablaAeropuertos();
-		daoAeropuertos.setConn(conn);
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
-		SimpleDateFormat format2 = new SimpleDateFormat("dd/MM/yyyy");
-		Reserva resp = null;
-		try {
-			format2.parse(reserva.getFecha().toString());
-		} catch (ParseException ex) {
-			String fecha = format2.format(format.parse(reserva.getFecha()));
-			reserva.setFecha(fecha);
+//	public Reserva createReservaViajero(ReservaViajeros reserva) throws Exception 
+//	{
+//		DAOTablaVuelos daoVuelos = new DAOTablaVuelos();
+//		daoVuelos.setConn(conn);
+//		DAOTablaAeropuertos daoAeropuertos = new DAOTablaAeropuertos();
+//		daoAeropuertos.setConn(conn);
+//		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+//		SimpleDateFormat format2 = new SimpleDateFormat("dd/MM/yyyy");
+//		Reserva resp = null;
+//		try {
+//			format2.parse(reserva.getFecha().toString());
+//		} catch (ParseException ex) {
+//			String fecha = format2.format(format.parse(reserva.getFecha()));
+//			reserva.setFecha(fecha);
+//
+//		}
+//
+//		String sql2= "Insert into RESERVA(FECHA,TIPO_RESERVA,AERO_SAL,AERO_LLEG) values(TO_DATE('"+ reserva.getFecha()+"','DD/MM/YYYY'),'"+reserva.getTipoReserva()+"','"+reserva.getAeroSal()+"','"+reserva.getAeroLleg()+"')";
+//		PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
+//		prepStmt2.executeUpdate();
+//		ViajeViajeros vuelo = daoVuelos.getViajeViajeros(reserva.getIdVuelo(), new Date());
+//		boolean esMultiple = daoVuelos.getViajeViajerosAeropuertos(reserva.getAeroSal(), reserva.getAeroLleg())==null;
+//		if(!esMultiple & vuelo == null)
+//		{
+//			throw new Exception("Se ha escogido un vuelo nulo");
+//		}
+//		int idReservaGen = 0;
+//
+//		if(!esMultiple)
+//		{
+//			if(verificarReservaVuelo(reserva, vuelo))
+//			{
+//				if(vuelo == null)
+//				{
+//					throw new Exception("Se ha escogido un vuelo inexistente");
+//				}
+//				if(reserva.getAeroSal().equals(vuelo.getAeropuertoSA().getCodigo()) && reserva.getAeroLleg().equals(vuelo.getAeropuertoLL().getCodigo()))
+//				{
+//
+//					ArrayList<Reserva> reservas2 = getReservas();
+//					idReservaGen = reservas2.get(reservas2.size()-1).getId();
+//					String sql= "Insert into RESERVA_VIAJEROS(ID_RESERVA_GENERAL,ID_VUELO,ID_VIAJERO, TIPO_ID_VIAJERO,TIPO) values("+idReservaGen+","+reserva.getIdVuelo()+","+reserva.getIdViajero()+",'"+reserva.getTipoIdViajero()+"','"+reserva.getClase()+"')";
+//					PreparedStatement prepStmt=conn.prepareStatement(sql);
+//					prepStmt.executeUpdate();
+//					ArrayList<ReservaViajeros> reservasViajeros = getReservasViajeros();
+//					int id = reservasViajeros.get(reservasViajeros.size()-1).getId();
+//					reserva.setIdReservaGeneral(idReservaGen);
+//					reserva.setId(id);
+//					resp = reserva;
+//
+//				}
+//				else
+//				{
+//					throw new Exception("El vuelo seleccionado no hace el viaje desde "+reserva.getAeroSal()+" hasta "+reserva.getAeroLleg()+", intente con otro vuelo .");
+//				}
+//
+//			}
+//		}
+//		else
+//		{
+//			resp = createReservaVuelosMultiples(reserva, daoVuelos);
+//		}
+//		return resp;
+//
+//	}
 
-		}
+//	public ArrayList<ViajeViajeros> darVuelosReservaMultiple(DAOTablaVuelos daoVuelos, String aeroSal, String aeroLleg) throws Exception
+//	{
+//
+//
+//		DAOTablaAeropuertos daoAeropuertos = new DAOTablaAeropuertos();
+//		daoAeropuertos.setConn(conn);
+//		Aeropuerto aeroSAL = daoAeropuertos.getAeropuerto(aeroSal);
+//		GrafoDirigido grafo = new GrafoDirigido(daoAeropuertos.getAeropuertos(),daoVuelos.getViajesViajeros());
+//		Dijkstra dijkstra = new Dijkstra(grafo, daoVuelos);
+//		dijkstra.execute(aeroSAL);
+//		ArrayList<ViajeViajeros> escalas = dijkstra.getEscalas(aeroSal, aeroLleg);
+//		if(escalas == null)
+//		{
+//			throw new Exception("No hay vuelos que conecten estos dos aeropuertos");
+//		}
+//		else
+//		{
+//			return escalas;
+//		}
+//
+//	}
 
-		String sql2= "Insert into RESERVA(FECHA,TIPO_RESERVA,AERO_SAL,AERO_LLEG) values(TO_DATE('"+ reserva.getFecha()+"','DD/MM/YYYY'),'"+reserva.getTipoReserva()+"','"+reserva.getAeroSal()+"','"+reserva.getAeroLleg()+"')";
-		PreparedStatement prepStmt2 = conn.prepareStatement(sql2);
-		prepStmt2.executeUpdate();
-		ViajeViajeros vuelo = daoVuelos.getVueloViajeros(reserva.getIdVuelo());
-		boolean esMultiple = daoVuelos.getVueloViajerosAeropuertos(reserva.getAeroSal(), reserva.getAeroLleg())==null;
-		if(!esMultiple & vuelo == null)
-		{
-			throw new Exception("Se ha escogido un vuelo nulo");
-		}
-		int idReservaGen = 0;
-
-		if(!esMultiple)
-		{
-			if(verificarReservaVuelo(reserva, vuelo))
-			{
-				if(vuelo == null)
-				{
-					throw new Exception("Se ha escogido un vuelo inexistente");
-				}
-				if(reserva.getAeroSal().equals(vuelo.getAeropuertoSA().getCodigo()) && reserva.getAeroLleg().equals(vuelo.getAeropuertoLL().getCodigo()))
-				{
-
-					ArrayList<Reserva> reservas2 = getReservas();
-					idReservaGen = reservas2.get(reservas2.size()-1).getId();
-					String sql= "Insert into RESERVA_VIAJEROS(ID_RESERVA_GENERAL,ID_VUELO,ID_VIAJERO, TIPO_ID_VIAJERO,TIPO) values("+idReservaGen+","+reserva.getIdVuelo()+","+reserva.getIdViajero()+",'"+reserva.getTipoIdViajero()+"','"+reserva.getClase()+"')";
-					PreparedStatement prepStmt=conn.prepareStatement(sql);
-					prepStmt.executeUpdate();
-					ArrayList<ReservaViajeros> reservasViajeros = getReservasViajeros();
-					int id = reservasViajeros.get(reservasViajeros.size()-1).getId();
-					reserva.setIdReservaGeneral(idReservaGen);
-					reserva.setId(id);
-					resp = reserva;
-
-				}
-				else
-				{
-					throw new Exception("El vuelo seleccionado no hace el viaje desde "+reserva.getAeroSal()+" hasta "+reserva.getAeroLleg()+", intente con otro vuelo .");
-				}
-
-			}
-		}
-		else
-		{
-			resp = createReservaVuelosMultiples(reserva, daoVuelos);
-		}
-		return resp;
-
-	}
-
-	public ArrayList<ViajeViajeros> darVuelosReservaMultiple(DAOTablaVuelos daoVuelos, String aeroSal, String aeroLleg) throws Exception
-	{
-
-
-		DAOTablaAeropuertos daoAeropuertos = new DAOTablaAeropuertos();
-		daoAeropuertos.setConn(conn);
-		Aeropuerto aeroSAL = daoAeropuertos.getAeropuerto(aeroSal);
-		GrafoDirigido grafo = new GrafoDirigido(daoAeropuertos.getAeropuertos(),daoVuelos.getVuelosViajeros());
-		Dijkstra dijkstra = new Dijkstra(grafo, daoVuelos);
-		dijkstra.execute(aeroSAL);
-		ArrayList<ViajeViajeros> escalas = dijkstra.getEscalas(aeroSal, aeroLleg);
-		if(escalas == null)
-		{
-			throw new Exception("No hay vuelos que conecten estos dos aeropuertos");
-		}
-		else
-		{
-			return escalas;
-		}
-
-	}
-
-	public ReservaViajerosMultiple createReservaVuelosMultiples(ReservaViajeros reserva, DAOTablaVuelos daoVuelos) throws Exception
-	{
-
-		ArrayList<Reserva> reservas = getReservas();
-
-		int idReserva = reservas.get(reservas.size()-1).getId();
-		ArrayList<ViajeViajeros> vuelosReservaMultiple = darVuelosReservaMultiple(daoVuelos, reserva.getAeroSal(), reserva.getAeroLleg());
-
-		ArrayList<ReservaViajeros> resp = new ArrayList<>();
-		for(int i = 0; i<vuelosReservaMultiple.size();i++)
-		{
-			ViajeViajeros vueloActual = vuelosReservaMultiple.get(i);
-			if(verificarReservaVuelo(reserva, vueloActual))
-			{
-				String sql= "Insert into RESERVA_VIAJEROS(ID_RESERVA_GENERAL,ID_VUELO,ID_VIAJERO,TIPO_ID_VIAJERO,TIPO) values("+idReserva+","+vueloActual.getId()+","+reserva.getIdViajero()+",'"+reserva.getTipoIdViajero()+"','"+reserva.getClase()+"')";
-
-				PreparedStatement prepStmt=conn.prepareStatement(sql);
-				prepStmt.executeQuery();
-				ArrayList<ReservaViajeros> reservasViajeros = getReservasViajeros();
-				ReservaViajeros res = reservasViajeros.get(reservasViajeros.size()-1);
-				resp.add(res);
-			}
-		}
-		return new ReservaViajerosMultiple(idReserva, reserva.getIdViajero(),reserva.getTipoIdViajero(), reserva.getClase(),reserva.getFecha(),reserva.getTipoReserva(), reserva.getAeroSal(), reserva.getAeroLleg(), resp);
-
-	}
+//	public ReservaViajerosMultiple createReservaVuelosMultiples(ReservaViajeros reserva, DAOTablaVuelos daoVuelos) throws Exception
+//	{
+//
+//		ArrayList<Reserva> reservas = getReservas();
+//
+//		int idReserva = reservas.get(reservas.size()-1).getId();
+//		ArrayList<ViajeViajeros> vuelosReservaMultiple = darVuelosReservaMultiple(daoVuelos, reserva.getAeroSal(), reserva.getAeroLleg());
+//
+//		ArrayList<ReservaViajeros> resp = new ArrayList<>();
+//		for(int i = 0; i<vuelosReservaMultiple.size();i++)
+//		{
+//			ViajeViajeros vueloActual = vuelosReservaMultiple.get(i);
+//			if(verificarReservaVuelo(reserva, vueloActual))
+//			{
+//				String sql= "Insert into RESERVA_VIAJEROS(ID_RESERVA_GENERAL,ID_VUELO,ID_VIAJERO,TIPO_ID_VIAJERO,TIPO) values("+idReserva+","+vueloActual.getId()+","+reserva.getIdViajero()+",'"+reserva.getTipoIdViajero()+"','"+reserva.getClase()+"')";
+//
+//				PreparedStatement prepStmt=conn.prepareStatement(sql);
+//				prepStmt.executeQuery();
+//				ArrayList<ReservaViajeros> reservasViajeros = getReservasViajeros();
+//				ReservaViajeros res = reservasViajeros.get(reservasViajeros.size()-1);
+//				resp.add(res);
+//			}
+//		}
+//		return new ReservaViajerosMultiple(idReserva, reserva.getIdViajero(),reserva.getTipoIdViajero(), reserva.getClase(),reserva.getFecha(),reserva.getTipoReserva(), reserva.getAeroSal(), reserva.getAeroLleg(), resp);
+//
+//	}
 
 	public boolean verificarReservaVuelo(ReservaViajeros reserva, ViajeViajeros vuelo) throws Exception
 	{
@@ -414,8 +415,8 @@ public class DAOTablaReservas {
 		int idReserva = idUltimo+1;
 		String sql= "Insert into RESERVA_CARGA(ID,ID_VUELO,ID_CARGA,ID_REMITENTE,TIPO_ID_REMITENTE) values("+idReserva+","+reserva.getIdVuelo()+","+reserva.getIdCarga()+","+reserva.getIdRemitente()+","+reserva.getTipoIdRemitente()+")";
 		String sql2= "Insert into RESERVA(FECHA,TIPO_RESERVA,AERO_SAL,AERO_LLEG) values(TO_DATE('"+ reserva.getFecha()+"','DD/MM/YYYY'),'"+reserva.getTipoReserva()+"','"+reserva.getAeroSal()+"','"+reserva.getAeroLleg()+"')";
-		Vuelo vuelo = daoVuelos.getVuelo(reserva.getIdVuelo());
-		String idAvion = vuelo.getAvion();
+		Viaje viaje = daoVuelos.getViaje(reserva.getIdVuelo(),new Date());
+		String idAvion = viaje.getAvion();
 		Avion avion = daoAviones.darAvion(idAvion);
 		if(idAvion == null)
 		{
@@ -460,39 +461,39 @@ public class DAOTablaReservas {
 		}
 	}
 
-	public ProductoReservaGrupalYCarga crearReservaGruposYCargas(CreacionReservaGrupalYCarga reservaGrupal) throws Exception
-	{
-		DAOTablaViajeros daoViajeros = new DAOTablaViajeros();
-		daoViajeros.setConn(conn);
-		DAOTablaCargas daoCargas = new DAOTablaCargas();
-		daoCargas.setConn(conn);
-		ArrayList<Integer> idsViajeros = reservaGrupal.getIdViajeros();
-		ArrayList<String> tipoIdsViajeros = reservaGrupal.getTipoIdViajeros();
-		Viajeros primerViajero = daoViajeros.getViajero(idsViajeros.get(0), tipoIdsViajeros.get(0));
-		ArrayList<ReservaCarga> reservasCargas = new ArrayList<ReservaCarga>();
-		for(int i = 0; i<reservaGrupal.getIdCargas().size(); i++)
-		{
-
-			int idCarga = reservaGrupal.getIdCargas().get(i);
-			ReservaCarga reservaC = new ReservaCarga(0, reservaGrupal.getIdVuelo(), primerViajero.getId(), primerViajero.getTipo(),idCarga, reservaGrupal.getFecha(), reservaGrupal.getTipoReserva(), reservaGrupal.getAeroSal(), reservaGrupal.getAeroLleg());
-			createReservaCarga(reservaC);
-			reservasCargas.add(reservaC);
-
-		}
-		ArrayList<Reserva> reservasViajeros = new ArrayList<Reserva>();
-		for(int i = 1; i<idsViajeros.size(); i++)
-		{
-			int idActual = idsViajeros.get(i);
-			String tipoIdActual = tipoIdsViajeros.get(i);
-			ReservaViajeros reserva = new ReservaViajeros(0,0, reservaGrupal.getIdVuelo(), idActual, tipoIdActual, reservaGrupal.getClase(), reservaGrupal.getFecha(), reservaGrupal.getTipoReserva(),reservaGrupal.getAeroSal(), reservaGrupal.getAeroLleg());
-			Reserva rta = createReservaViajero(reserva);
-
-			reservasViajeros.add(rta);
-		}
-
-		return new ProductoReservaGrupalYCarga(reservasViajeros,reservaGrupal.getIdVuelo(),reservaGrupal.getClase(),reservaGrupal.getFecha(),reservaGrupal.getTipoReserva(),reservaGrupal.getAeroSal(),reservaGrupal.getAeroLleg(),reservasCargas, primerViajero);
-
-	}
+//	public ProductoReservaGrupalYCarga crearReservaGruposYCargas(CreacionReservaGrupalYCarga reservaGrupal) throws Exception
+//	{
+//		DAOTablaViajeros daoViajeros = new DAOTablaViajeros();
+//		daoViajeros.setConn(conn);
+//		DAOTablaCargas daoCargas = new DAOTablaCargas();
+//		daoCargas.setConn(conn);
+//		ArrayList<Integer> idsViajeros = reservaGrupal.getIdViajeros();
+//		ArrayList<String> tipoIdsViajeros = reservaGrupal.getTipoIdViajeros();
+//		Viajeros primerViajero = daoViajeros.getViajero(idsViajeros.get(0), tipoIdsViajeros.get(0));
+//		ArrayList<ReservaCarga> reservasCargas = new ArrayList<ReservaCarga>();
+//		for(int i = 0; i<reservaGrupal.getIdCargas().size(); i++)
+//		{
+//
+//			int idCarga = reservaGrupal.getIdCargas().get(i);
+//			ReservaCarga reservaC = new ReservaCarga(0, reservaGrupal.getIdVuelo(), primerViajero.getId(), primerViajero.getTipo(),idCarga, reservaGrupal.getFecha(), reservaGrupal.getTipoReserva(), reservaGrupal.getAeroSal(), reservaGrupal.getAeroLleg());
+//			createReservaCarga(reservaC);
+//			reservasCargas.add(reservaC);
+//
+//		}
+//		ArrayList<Reserva> reservasViajeros = new ArrayList<Reserva>();
+//		for(int i = 1; i<idsViajeros.size(); i++)
+//		{
+//			int idActual = idsViajeros.get(i);
+//			String tipoIdActual = tipoIdsViajeros.get(i);
+//			ReservaViajeros reserva = new ReservaViajeros(0,0, reservaGrupal.getIdVuelo(), idActual, tipoIdActual, reservaGrupal.getClase(), reservaGrupal.getFecha(), reservaGrupal.getTipoReserva(),reservaGrupal.getAeroSal(), reservaGrupal.getAeroLleg());
+//			Reserva rta = createReservaViajero(reserva);
+//
+//			reservasViajeros.add(rta);
+//		}
+//
+//		return new ProductoReservaGrupalYCarga(reservasViajeros,reservaGrupal.getIdVuelo(),reservaGrupal.getClase(),reservaGrupal.getFecha(),reservaGrupal.getTipoReserva(),reservaGrupal.getAeroSal(),reservaGrupal.getAeroLleg(),reservasCargas, primerViajero);
+//
+//	}
 	public Reserva cancelarReservaViajeroVuelo(int idReserva) throws Exception
 	{
 		DAOTablaVuelos daoVuelos = new DAOTablaVuelos();
@@ -528,11 +529,11 @@ public class DAOTablaReservas {
 	public ReservaViajeros cancelarReservaVueloUnico(DAOTablaVuelos daoVuelos, ReservaViajeros reserva, int idReserva) throws Exception
 	{
 		int id = reserva.getId();
-		Vuelo vuelo =daoVuelos.getVuelo(getIdVueloReserva(id));
+		Viaje viaje =daoVuelos.getViaje(getIdVueloReserva(id),new Date());
 		Calendar cal = Calendar.getInstance();
 		cal.add(Calendar.HOUR, 24);
 		Calendar cal2 = Calendar.getInstance();
-		cal2.setTime(vuelo.getHoraSalida());
+		cal2.setTime(viaje.getHoraSalida());
 		conn.setSavepoint("reserva");
 		if( cal.compareTo(cal2) <= 0 )
 		{

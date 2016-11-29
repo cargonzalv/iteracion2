@@ -7,13 +7,13 @@ public class ReservaViajeros extends Reserva{
 	
 	private int idReservaGeneral;
 	private int idViajero;
-	private int idVuelo;
+	private String idVuelo;
 	private String tipoIdViajero;
 	private String clase;
 	public static final String ECONOMICA = "Economica";
 	public static final String EJECUTIVA = "Ejecutiva";
 
-	public ReservaViajeros(int id ,int idReservaGeneral, int idVuelo, int idViajero,String tipoIdViajero, String clase,String fecha,String tipoReserva, String aeroSal, String aeroLleg) {
+	public ReservaViajeros(int id ,int idReservaGeneral, String idVuelo, int idViajero,String tipoIdViajero, String clase,String fecha,String tipoReserva, String aeroSal, String aeroLleg) {
 		super(id,fecha,tipoReserva,aeroSal, aeroLleg);
 		// TODO Auto-generated constructor stub
 		this.idViajero=idViajero;
@@ -57,10 +57,10 @@ public class ReservaViajeros extends Reserva{
 		this.idReservaGeneral = idReservaGeneral;
 	}
 	
-	public int getIdVuelo() {
+	public String getIdVuelo() {
 		return idVuelo;
 	}
-	public void setIdVuelo(int idVuelo) {
+	public void setIdVuelo(String idVuelo) {
 		this.idVuelo = idVuelo;
 	}
 	
